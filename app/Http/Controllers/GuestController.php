@@ -6,12 +6,9 @@ use Illuminate\Http\Request;
 
 class GuestController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-         // Data statistik untuk ditampilkan di home
+        // Data statistik untuk ditampilkan di home
         $stats = [
             'total_perangkat' => 15,
             'total_lembaga' => 8,
@@ -111,9 +108,9 @@ class GuestController extends Controller
             ]
         ];
 
-        // Data untuk passing ke view
+        // Data untuk passing ke view - TAMBAHKAN TITLE DI SINI
         $data = [
-            'title' => 'Portal Desa - Perangkat & Lembaga',
+            'title' => 'Portal Desa Mandiri - Perangkat & Lembaga Desa',
             'stats' => $stats,
             'perangkat_desa' => $perangkat_desa,
             'lembaga_desa' => $lembaga_desa,
@@ -122,6 +119,7 @@ class GuestController extends Controller
 
         return view('home', $data);
     }
+
 
 
     /**

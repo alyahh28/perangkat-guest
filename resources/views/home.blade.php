@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title }}</title>
+    <title>{{ $title ?? 'Portal Desa Mandiri' }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -25,6 +25,7 @@
                     <a href="#lembaga" class="hover:text-green-200">Lembaga Desa</a>
                     <a href="#wilayah" class="hover:text-green-200">Struktur Wilayah</a>
                     <a href="#kontak" class="hover:text-green-200">Kontak</a>
+                     <a href="{{ route('login') }}" class="hover:text-green-200">Login</a>
                 </nav>
                 <button class="md:hidden text-2xl">
                     <i class="fas fa-bars"></i>
@@ -63,28 +64,28 @@
                     <div class="bg-green-100 rounded-full w-24 h-24 mx-auto flex items-center justify-center mb-4 group-hover:bg-green-200">
                         <i class="fas fa-user-tie text-green-600 text-3xl"></i>
                     </div>
-                    <h4 class="text-4xl font-bold text-gray-800">{{ $stats['total_perangkat'] }}</h4>
+                    <h4 class="text-4xl font-bold text-gray-800">{{ $stats['total_perangkat'] ?? 0 }}</h4>
                     <p class="text-gray-600 font-semibold">Perangkat Desa</p>
                 </div>
                 <div class="text-center group hover:transform hover:scale-105 transition duration-300">
                     <div class="bg-blue-100 rounded-full w-24 h-24 mx-auto flex items-center justify-center mb-4 group-hover:bg-blue-200">
                         <i class="fas fa-hands-helping text-blue-600 text-3xl"></i>
                     </div>
-                    <h4 class="text-4xl font-bold text-gray-800">{{ $stats['total_lembaga'] }}</h4>
+                    <h4 class="text-4xl font-bold text-gray-800">{{ $stats['total_lembaga'] ?? 0 }}</h4>
                     <p class="text-gray-600 font-semibold">Lembaga Desa</p>
                 </div>
                 <div class="text-center group hover:transform hover:scale-105 transition duration-300">
                     <div class="bg-yellow-100 rounded-full w-24 h-24 mx-auto flex items-center justify-center mb-4 group-hover:bg-yellow-200">
                         <i class="fas fa-map-marker-alt text-yellow-600 text-3xl"></i>
                     </div>
-                    <h4 class="text-4xl font-bold text-gray-800">{{ $stats['total_rt'] }}</h4>
+                    <h4 class="text-4xl font-bold text-gray-800">{{ $stats['total_rt'] ?? 0 }}</h4>
                     <p class="text-gray-600 font-semibold">Rukun Tetangga</p>
                 </div>
                 <div class="text-center group hover:transform hover:scale-105 transition duration-300">
                     <div class="bg-red-100 rounded-full w-24 h-24 mx-auto flex items-center justify-center mb-4 group-hover:bg-red-200">
                         <i class="fas fa-map text-red-600 text-3xl"></i>
                     </div>
-                    <h4 class="text-4xl font-bold text-gray-800">{{ $stats['total_rw'] }}</h4>
+                    <h4 class="text-4xl font-bold text-gray-800">{{ $stats['total_rw'] ?? 0 }}</h4>
                     <p class="text-gray-600 font-semibold">Rukun Warga</p>
                 </div>
             </div>
@@ -102,11 +103,11 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                @foreach($perangkat_desa as $index => $perangkat)
+                @foreach(($perangkat_desa ?? []) as $index => $perangkat)
                 <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition duration-300 transform hover:-translate-y-2">
                     <div class="text-center mb-4">
                         <div class="w-24 h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-full mx-auto flex items-center justify-center shadow-md">
-                            @if($perangkat['foto'])
+                            @if($perangkat['foto'] ?? false)
                                 <img src="{{ $perangkat['foto'] }}" alt="{{ $perangkat['nama'] }}" class="w-24 h-24 rounded-full object-cover">
                             @else
                                 <i class="fas fa-user text-white text-3xl"></i>
@@ -137,7 +138,7 @@
 
             <div class="text-center mt-8">
                 <p class="text-gray-600">
-                    Total <span class="font-semibold text-green-600">{{ count($perangkat_desa) }}</span> perangkat desa aktif
+                    Total <span class="font-semibold text-green-600">{{ count($perangkat_desa ?? []) }}</span> perangkat desa aktif
                 </p>
             </div>
         </div>
@@ -154,12 +155,12 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                @foreach($lembaga_desa as $lembaga)
+                @foreach(($lembaga_desa ?? []) as $lembaga)
                 <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg p-6 hover:shadow-xl transition duration-300">
                     <div class="flex items-start space-x-4">
                         <div class="flex-shrink-0">
                             <div class="w-16 h-16 bg-blue-500 rounded-xl flex items-center justify-center shadow-md">
-                                @if($lembaga['logo'])
+                                @if($lembaga['logo'] ?? false)
                                     <img src="{{ $lembaga['logo'] }}" alt="{{ $lembaga['nama'] }}" class="w-12 h-12">
                                 @else
                                     <i class="fas fa-hands-helping text-white text-2xl"></i>
@@ -225,7 +226,7 @@
                         Rukun Warga (RW)
                     </h3>
                     <div class="space-y-4">
-                        @foreach($struktur_wilayah['rw'] as $rw)
+                        @foreach(($struktur_wilayah['rw'] ?? []) as $rw)
                         <div class="flex items-center justify-between p-4 bg-red-50 rounded-lg hover:bg-red-100 transition duration-300">
                             <div class="flex items-center">
                                 <div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center mr-4">
@@ -237,7 +238,7 @@
                                 </div>
                             </div>
                             <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                                {{ count(array_filter($struktur_wilayah['rt'], function($rt) use ($rw) { return $rt['rw'] === $rw['nomor']; })) }} RT
+                                {{ count(array_filter($struktur_wilayah['rt'] ?? [], function($rt) use ($rw) { return $rt['rw'] === $rw['nomor']; })) }} RT
                             </span>
                         </div>
                         @endforeach
@@ -251,7 +252,7 @@
                         Rukun Tetangga (RT)
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        @foreach($struktur_wilayah['rt'] as $rt)
+                        @foreach(($struktur_wilayah['rt'] ?? []) as $rt)
                         <div class="flex items-center p-3 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition duration-300">
                             <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center mr-3">
                                 <span class="text-white font-bold text-sm">RT</span>
