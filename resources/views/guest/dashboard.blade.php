@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>SEO Master - SEO Agency Website Template</title>
+    <title>Project Bina Desa</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -49,7 +49,7 @@
         <div class="container-xxl position-relative p-0">
             <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
                 <a href="" class="navbar-brand p-0">
-                    <h1 class="m-0"><i class="fa fa-search me-2"></i>SEO<span class="fs-5">Master</span></h1>
+                    <h1 class="m-0"><i class="fa fa-search me-2"></i>Bina<span class="fs-5">Desa</span></h1>
                     <!-- <img src="{{ asset('assets-guest/img/logo.png') }}" alt="Logo"> -->
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"

@@ -14,7 +14,8 @@
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
 
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -35,7 +36,8 @@
 <body>
     <div class="container-xxl bg-white p-0">
         <!-- Spinner Start -->
-        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div id="spinner"
+            class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
@@ -46,19 +48,21 @@
         <div class="container-xxl position-relative p-0">
             <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
                 <a href="" class="navbar-brand p-0">
-                    <h1 class="m-0"><i class="fa fa-search me-2"></i>SEO<span class="fs-5">Master</span></h1>
+                    <h1 class="m-0"><i class="fa fa-search me-2"></i>Bina <span class="fs-5"> Desa</span></h1>
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarCollapse">
                     <span class="fa fa-bars"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto py-0">
                         <a href="{{ url('/dashboard') }}" class="nav-item nav-link">Home</a>
-                        <a href="{{ url('/about') }}" class="nav-item nav-link">About</a>
-                        <a href="{{ url('/service') }}" class="nav-item nav-link">Service</a>
-                        <a href="{{ url('/project') }}" class="nav-item nav-link">Project</a>
                         <a href="{{ route('warga.index') }}" class="nav-item nav-link active">Data Warga</a>
-                        <div class="nav-item dropdown">
+                        <a href="{{ route('perangkat.index') }}" class="nav-item nav-link">Perangkat Desa</a>
+                        <a href="{{ url('/lembaga') }}" class="nav-item nav-link">Lembaga Desa</a>
+                        <a href="{{ url('/jabatan') }}" class="nav-item nav-link">Jabatan Lembaga</a>
+                        <a href="{{ url('/anggota') }}" class="nav-item nav-link">Anggota Lembaga</a>
+                        {{-- <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                             <div class="dropdown-menu m-0">
                                 <a href="{{ url('/team') }}" class="dropdown-item">Our Team</a>
@@ -67,7 +71,7 @@
                         </div>
                         <a href="{{ url('/contact') }}" class="nav-item nav-link">Contact</a>
                     </div>
-                </div>
+                </div> --}}
             </nav>
 
             <div class="container-xxl py-5 bg-primary hero-header mb-5">
@@ -119,34 +123,37 @@
                                 </thead>
                                 <tbody>
                                     @forelse ($dataWarga as $index => $item)
-                                    <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>{{ $item->no_ktp }}</td>
-                                        <td>{{ $item->nama }}</td>
-                                        <td>{{ $item->jenis_kelamin }}</td>
-                                        <td>{{ $item->agama }}</td>
-                                        <td>{{ $item->pekerjaan }}</td>
-                                        <td>{{ $item->telp }}</td>
-                                        <td>{{ $item->email }}</td>
-                                        <td>
-                                            <div class="btn-group" role="group">
-                                                <a href="{{ route('warga.edit', $item->warga_id) }}" class="btn btn-warning btn-sm">
-                                                    <i class="fa fa-edit"></i>
-                                                </a>
-                                                <form action="{{ route('warga.destroy', $item->warga_id) }}" method="POST" style="display: inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
-                                                        <i class="fa fa-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                        <tr>
+                                            <td>{{ $index + 1 }}</td>
+                                            <td>{{ $item->no_ktp }}</td>
+                                            <td>{{ $item->nama }}</td>
+                                            <td>{{ $item->jenis_kelamin }}</td>
+                                            <td>{{ $item->agama }}</td>
+                                            <td>{{ $item->pekerjaan }}</td>
+                                            <td>{{ $item->telp }}</td>
+                                            <td>{{ $item->email }}</td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="{{ route('warga.edit', $item->warga_id) }}"
+                                                        class="btn btn-warning btn-sm">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+                                                    <form action="{{ route('warga.destroy', $item->warga_id) }}"
+                                                        method="POST" style="display: inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm"
+                                                            onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     @empty
-                                    <tr>
-                                        <td colspan="9" class="text-center">Tidak ada data warga</td>
-                                    </tr>
+                                        <tr>
+                                            <td colspan="9" class="text-center">Tidak ada data warga</td>
+                                        </tr>
                                     @endforelse
                                 </tbody>
                             </table>
@@ -167,10 +174,14 @@
                         <p><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
                         <p><i class="fa fa-envelope me-3"></i>info@example.com</p>
                         <div class="d-flex pt-2">
-                            <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
-                            <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-instagram"></i></a>
+                            <a class="btn btn-outline-light btn-social" href=""><i
+                                    class="fab fa-twitter"></i></a>
+                            <a class="btn btn-outline-light btn-social" href=""><i
+                                    class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-outline-light btn-social" href=""><i
+                                    class="fab fa-youtube"></i></a>
+                            <a class="btn btn-outline-light btn-social" href=""><i
+                                    class="fab fa-instagram"></i></a>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-3">
@@ -184,13 +195,16 @@
                         <h5 class="text-white mb-4">Project Gallery</h5>
                         <div class="row g-2">
                             <div class="col-4">
-                                <img class="img-fluid" src="{{ asset('assets-guest/img/portfolio-1.jpg') }}" alt="Image">
+                                <img class="img-fluid" src="{{ asset('assets-guest/img/portfolio-1.jpg') }}"
+                                    alt="Image">
                             </div>
                             <div class="col-4">
-                                <img class="img-fluid" src="{{ asset('assets-guest/img/portfolio-2.jpg') }}" alt="Image">
+                                <img class="img-fluid" src="{{ asset('assets-guest/img/portfolio-2.jpg') }}"
+                                    alt="Image">
                             </div>
                             <div class="col-4">
-                                <img class="img-fluid" src="{{ asset('assets-guest/img/portfolio-3.jpg') }}" alt="Image">
+                                <img class="img-fluid" src="{{ asset('assets-guest/img/portfolio-3.jpg') }}"
+                                    alt="Image">
                             </div>
                         </div>
                     </div>
@@ -209,7 +223,8 @@
         <!-- Footer End -->
 
         <!-- Back to Top -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top pt-2"><i class="bi bi-arrow-up"></i></a>
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top pt-2"><i
+                class="bi bi-arrow-up"></i></a>
     </div>
 
     <!-- JavaScript Libraries -->
