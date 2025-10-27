@@ -11,7 +11,14 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('guest.dashboard');
+        $stats = [
+            'total_perangkat' => 15,
+            'total_lembaga' => 8,
+            'total_rt' => 10,
+            'total_rw' => 4,
+        ];
+
+        return view('guest.dashboard', compact('stats'));
     }
 
     /**

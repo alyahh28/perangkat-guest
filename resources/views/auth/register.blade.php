@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Login - Bina Desa</title>
+    <title>Register - Bina Desa</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -38,7 +38,7 @@
             font-family: 'Roboto', sans-serif;
         }
 
-        .login-wrapper {
+        .register-wrapper {
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -46,28 +46,28 @@
             padding: 20px;
         }
 
-        .login-container {
+        .register-container {
             background: white;
             padding: 40px 30px;
             border-radius: 10px;
             box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 400px;
-            border-top: 4px solid #007bff;
+            max-width: 450px;
+            border-top: 4px solid #28a745;
         }
 
-        .login-header {
+        .register-header {
             text-align: center;
             margin-bottom: 30px;
         }
 
-        .login-header h2 {
-            color: #007bff;
+        .register-header h2 {
+            color: #28a745;
             margin-bottom: 10px;
             font-weight: 600;
         }
 
-        .login-header p {
+        .register-header p {
             color: #6c757d;
             margin-bottom: 0;
         }
@@ -93,15 +93,15 @@
         }
 
         .form-group input:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            border-color: #286ea7;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
             outline: none;
         }
 
         button[type="submit"] {
             width: 100%;
             padding: 12px;
-            background-color: #007bff;
+            background-color: #286ea7;
             color: white;
             border: none;
             border-radius: 5px;
@@ -112,7 +112,7 @@
         }
 
         button[type="submit"]:hover {
-            background-color: #0056b3;
+            background-color: #218838;
             transform: translateY(-1px);
         }
 
@@ -131,6 +131,16 @@
             padding-left: 20px;
         }
 
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
         .text-error {
             color: #dc3545;
             font-size: 12px;
@@ -138,19 +148,19 @@
             display: block;
         }
 
-        .login-footer {
+        .login-link {
             text-align: center;
             margin-top: 25px;
             padding-top: 20px;
             border-top: 1px solid #e9ecef;
         }
 
-        .login-footer a {
+        .login-link a {
             color: #007bff;
             text-decoration: none;
         }
 
-        .login-footer a:hover {
+        .login-link a:hover {
             text-decoration: underline;
         }
     </style>
@@ -174,13 +184,12 @@
     </nav>
     <!-- Navbar End -->
 
-    <!-- Login Wrapper Start -->
-    <div class="login-wrapper">
-        <!-- MAIN CONTENT - TIDAK DIUBAH -->
-        <div class="login-container">
-            <div class="login-header">
-                <h2>👋 Login Guest</h2>
-                <p>Masuk ke sistem Bina Desa</p>
+    <!-- Register Wrapper Start -->
+    <div class="register-wrapper">
+        <div class="register-container">
+            <div class="register-header">
+                <h2>📝 Register Guest</h2>
+                <p>Daftar akun baru Bina Desa</p>
             </div>
 
             @if ($errors->any())
@@ -193,8 +202,30 @@
                 </div>
             @endif
 
-            <form action="{{ route('login.post') }}" method="POST">
+            @if (session('success'))
+                <div class="alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            <form action="{{ route('register.post') }}" method="POST">
                 @csrf
+
+                <div class="form-group">
+                    <label for="name">Nama Lengkap</label>
+                    <input type="text" id="name" name="name" value="{{ old('name') }}" required>
+                    @error('name')
+                        <span class="text-error">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="{{ old('email') }}" required>
+                    @error('email')
+                        <span class="text-error">{{ $message }}</span>
+                    @enderror
+                </div>
 
                 <div class="form-group">
                     <label for="username">Username</label>
@@ -210,22 +241,24 @@
                     @error('password')
                         <span class="text-error">{{ $message }}</span>
                     @enderror
-                    <small style="display: block; margin-top: 5px; color: #6c757d;">Min. 3 kar. & harus ada huruf
+                    <small style="display: block; margin-top: 5px; color: #6c757d;">Min. 3 karakter & harus ada huruf
                         kapital.</small>
                 </div>
 
-                <button type="submit">LOGIN</button>
+                <div class="form-group">
+                    <label for="password_confirmation">Konfirmasi Password</label>
+                    <input type="password" id="password_confirmation" name="password_confirmation" required>
+                </div>
+
+                <button type="submit">REGISTER</button>
             </form>
 
-            <div class="login-footer">
-                <p style="font-size: 0.9em;">
-                    Belum punya akun? <a href="{{ route('register') }}">Daftar di sini</a>
-                </p>
+            <div class="login-link">
+                Sudah punya akun? <a href="{{ route('login') }}">Login di sini</a>
             </div>
         </div>
-        <!-- END MAIN CONTENT -->
     </div>
-    <!-- Login Wrapper End -->
+    <!-- Register Wrapper End -->
 
     <!-- Footer Start -->
     <div class="container-fluid bg-primary text-light footer wow fadeIn" data-wow-delay="0.1s">
