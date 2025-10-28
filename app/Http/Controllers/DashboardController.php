@@ -18,7 +18,7 @@ class DashboardController extends Controller
             'total_rw' => 4,
         ];
 
-        return view('guest.dashboard', compact('stats'));
+        return view('pages.dashboard', compact('stats'));
     }
 
     /**

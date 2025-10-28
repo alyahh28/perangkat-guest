@@ -15,7 +15,7 @@ class PerangkatDesaController extends Controller
     public function index()
     {
         $data['dataPerangkat'] = PerangkatDesa::with('warga')->get();
-        return view('guest.perangkat.index', $data);
+        return view('pages.perangkat.index', $data);
     }
 
     /**
@@ -24,7 +24,7 @@ class PerangkatDesaController extends Controller
     public function create()
     {
         $data['dataWarga'] = Warga::all();
-        return view('guest.perangkat.create', $data);
+        return view('pages.perangkat.create', $data);
     }
 
     /**
@@ -62,7 +62,7 @@ class PerangkatDesaController extends Controller
     {
         $data['dataPerangkat'] = PerangkatDesa::findOrFail($id);
         $data['dataWarga'] = Warga::all();
-        return view('guest.perangkat.edit', $data);
+        return view('pages.perangkat.edit', $data);
     }
 
     /**

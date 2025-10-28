@@ -3,7 +3,7 @@
 
 <head>
     {{-- START CSS --}}
-    @include('layouts.css')
+    @include('layouts.guest.css')
     {{-- END CSS --}}
 
 
@@ -23,7 +23,7 @@
 
         {{-- START HEADER --}}
         <!-- Navbar & Hero Start -->
-        @include('layouts.header')
+        @include('layouts.guest.header')
         <!-- Navbar & Hero End -->
         {{-- END HEADER --}}
 
@@ -43,7 +43,7 @@
                         <h2 class="mb-1" style="color: #2c3e50; font-weight: 800;">Daftar User</h2>
                         <p class="text-muted mb-0">Kelola semua pengguna sistem</p>
                     </div>
-                    <a href="{{ route('user.create') }}" class="btn btn-add">
+                    <a href="{{ route('users.create') }}" class="btn btn-add">
                         <i class="fa fa-plus me-2"></i>Tambah User Baru
                     </a>
                 </div>
@@ -96,11 +96,11 @@
                                     <button class="btn btn-action btn-detail flex-fill">
                                         <i class="fa fa-eye me-2"></i>Detail
                                     </button>
-                                    <a href="{{ route('user.edit', $item->id) }}"
+                                    <a href="{{ route('users.edit', $dataUsers->id )}}"
                                         class="btn btn-action btn-edit flex-fill">
                                         <i class="fa fa-edit me-2"></i>Edit
                                     </a>
-                                    <form action="{{ route('user.destroy', $item->id) }}" method="POST"
+                                    <form action="{{ route('users.destroy', $item->id) }}" method="POST"
                                         style="display: inline;">
                                         @csrf
                                         @method('DELETE')
@@ -118,7 +118,7 @@
                                 <i class="fa fa-users"></i>
                                 <h3 class="mb-3" style="color: #495057;">Belum Ada User</h3>
                                 <p class="mb-4">Mulai dengan menambahkan user pertama ke dalam sistem</p>
-                                <a href="{{ route('user.create') }}" class="btn btn-add btn-lg">
+                                <a href="{{ route('users.create') }}" class="btn btn-add btn-lg">
                                     <i class="fa fa-plus me-2"></i>Tambah User Pertama
                                 </a>
                             </div>
@@ -139,18 +139,18 @@
         <!-- Content End -->
 
         <!-- Footer Start -->
-        @include('layouts.footer')
+        @include('layouts.guest.footer')
         <!-- Footer End -->
 
         <!-- Back to Top -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top pt-2">
-            <i class="bi bi-arrow-up"></i>
-        </a>
+        <a href="https://faq.whatsapp.com/5913398998672934/?locale=en_US" class="btn btn-lg btn-primary btn-lg-square back-to-top pt-2"><i
+            </i><img src="{{ asset(path: 'assets-guest/img/IconWa.png') }}" alt="{{ __('') }}"></a>
+
     </div>
 {{-- end content --}}
 
     {{-- START JS --}}
-    @include('layouts.js')
+    @include('layouts.guest.js')
     {{-- END JS --}}
 
 

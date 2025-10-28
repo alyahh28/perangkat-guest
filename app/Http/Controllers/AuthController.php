@@ -14,7 +14,7 @@ class AuthController extends Controller
      */
     public function index()
     {
-        return view('auth.login');
+        return view('pages.auth.login');
     }
 
     /**
@@ -22,7 +22,7 @@ class AuthController extends Controller
      */
     public function showRegister()
     {
-        return view('auth.register');
+        return view('pages.auth.register');
     }
 
     /**
@@ -45,7 +45,7 @@ class AuthController extends Controller
     $data['username'] = $request->username;
     $data['password'] = $request->password;
 
-    return view('auth.login-succes', $data);
+    return view('pages.auth.login-succes', $data);
 }
 
     /**

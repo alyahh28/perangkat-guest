@@ -3,7 +3,7 @@
 
 <head>
     {{-- START CSS --}}
-    @include('layouts.css')
+    @include('layouts.guest.css')
     {{-- END CSS --}}
 
 
@@ -21,7 +21,7 @@
         <!-- Spinner End -->
 
         {{-- START HEADER --}}
-        @include('layouts.header')
+        @include('layouts.guest.header')
         {{-- END HEADER --}}
 
         <!-- Content Start -->
@@ -163,19 +163,19 @@
         <!-- Content End -->
 
         <!-- Footer Start -->
-        @include('layouts.footer')
+        @include('layouts.guest.footer')
         <!-- Footer End -->
 
         <!-- Back to Top -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top pt-2">
-            <i class="bi bi-arrow-up"></i>
-        </a>
+        <a href="https://faq.whatsapp.com/5913398998672934/?locale=en_US" class="btn btn-lg btn-primary btn-lg-square back-to-top pt-2"><i
+            </i><img src="{{ asset(path: 'assets-guest/img/IconWa.png') }}" alt="{{ __('') }}"></a>
+
     </div>
 
     {{-- START JS --}}
-    @include('layouts.js')
+    @include('layouts.guest.js')
 
-   
+
 </body>
 
 </html>

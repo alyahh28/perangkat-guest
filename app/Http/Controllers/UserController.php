@@ -14,7 +14,7 @@ class UserController extends Controller
     public function index()
     {
         $data['dataUsers'] = User::all();
-        return view('guest.user.index', $data);
+        return view('pages.user.index', $data);
     }
 
     /**
@@ -22,7 +22,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('guest.user.create');
+        return view('pages.user.create');
     }
 
     /**
@@ -51,7 +51,7 @@ class UserController extends Controller
     public function edit(string $id)
     {
         $data['dataUser'] = User::findOrFail($id);
-        return view('guest.user.edit', $data);
+        return view('pages.user.edit', $data);
     }
 
     /**
@@ -79,7 +79,7 @@ class UserController extends Controller
 
         $user->update($data);
 
-        return redirect()->route('user.index')->with('success', 'User berhasil diupdate!');
+        return redirect()->route('pages.user.index')->with('success', 'User berhasil diupdate!');
     }
 
     /**
@@ -90,6 +90,6 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        return redirect()->route('user.index')->with('success', 'User berhasil dihapus!');
+        return redirect()->route('pages.user.index')->with('success', 'User berhasil dihapus!');
     }
 }

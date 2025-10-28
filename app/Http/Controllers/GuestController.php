@@ -27,7 +27,7 @@ class GuestController extends Controller
                 'foto' => null
             ],
             [
-                'nama' => 'Siti Rahayu', 
+                'nama' => 'Siti Rahayu',
                 'jabatan' => 'Sekretaris Desa',
                 'nip' => '198506102010022002',
                 'kontak' => '081298765432',
@@ -73,7 +73,7 @@ class GuestController extends Controller
             [
                 'nama' => 'Karang Taruna',
                 'deskripsi' => 'Organisasi kepemudaan di tingkat desa yang berfungsi sebagai wadah pengembangan generasi muda.',
-                'kontak' => '081299998888', 
+                'kontak' => '081299998888',
                 'ketua' => 'Rizki Pratama',
                 'logo' => null,
                 'jumlah_anggota' => 35
@@ -117,7 +117,7 @@ class GuestController extends Controller
             'struktur_wilayah' => $struktur_wilayah
         ];
 
-        return view('home', $data);
+        return view('/pages/dashboard', $data);
     }
 
 

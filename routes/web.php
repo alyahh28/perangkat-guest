@@ -10,7 +10,7 @@ use App\Http\Controllers\PerangkatDesaController;
 
 // Route untuk halaman home guest (landing page)
 Route::get('/', [GuestController::class, 'index']);
-Route::get('/home', [GuestController::class, 'index']);
+Route::get('/pages/dashboard', [GuestController::class, 'index']);
 
 // Route untuk autentikasi
 Route::get('/auth', [AuthController::class, 'index'])->name('login');
@@ -29,9 +29,9 @@ Route::resource('warga', WargaController::class);
 Route::resource('perangkat', PerangkatDesaController::class);
 
 // Routes untuk User
-Route::resource('user', UserController::class);
+Route::resource('users', UserController::class);
+
+Route::resource('users', UserController::class);
 
 
-Route::get('/test', function() {
-    return view('test');
-});
+
