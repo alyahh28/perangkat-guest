@@ -96,7 +96,7 @@
                                     <button class="btn btn-action btn-detail flex-fill">
                                         <i class="fa fa-eye me-2"></i>Detail
                                     </button>
-                                    <a href="{{ route('users.edit', $dataUsers->id )}}"
+                                    <a href="{{ route('users.edit', $item->id )}}"
                                         class="btn btn-action btn-edit flex-fill">
                                         <i class="fa fa-edit me-2"></i>Edit
                                     </a>

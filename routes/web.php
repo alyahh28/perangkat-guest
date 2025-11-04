@@ -31,7 +31,6 @@ Route::resource('perangkat', PerangkatDesaController::class);
 // Routes untuk User
 Route::resource('users', UserController::class);
 
-Route::resource('users', UserController::class);
 
 
 

@@ -24,18 +24,18 @@
         <!-- Navbar & Hero End -->
         {{-- END HEADER --}}
 
-        <!-- Content Start -->
+
         <!-- Content Start -->
         <div class="container-xxl py-5">
             <div class="container px-lg-5">
                 <div class="row justify-content-center">
-                    <div class="col-lg-8">
+                    <div class="col-lg-10">
                         <div class="card border-0 shadow-lg">
                             <div class="card-header bg-gradient-primary text-white py-4">
                                 <div class="text-center">
                                     <i class="fa fa-user-plus fa-2x mb-3"></i>
                                     <h4 class="mb-0">Tambah Warga Baru</h4>
-                                    <p class="mb-0 mt-2">Form pendaftaran pengguna sistem desa</p>
+                                    <p class="mb-0 mt-2">Form pendaftaran warga desa</p>
                                 </div>
                             </div>
                             <div class="card-body p-5">
@@ -43,24 +43,106 @@
                                     @csrf
 
                                     <div class="row">
+                                        <!-- Data Pribadi -->
                                         <div class="col-12 mb-4">
-                                            <label for="name" class="form-label fw-bold">Nama Lengkap *</label>
+                                            <h5 class="text-primary mb-3 border-bottom pb-2">Data Pribadi</h5>
+                                        </div>
+
+                                        <div class="col-md-6 mb-4">
+                                            <label for="nama" class="form-label fw-bold">Nama Lengkap *</label>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-primary text-white">
                                                     <i class="fa fa-user"></i>
                                                 </span>
                                                 <input type="text"
-                                                    class="form-control @error('name') is-invalid @enderror"
-                                                    id="name" name="name" value="{{ old('name') }}"
+                                                    class="form-control @error('nama') is-invalid @enderror"
+                                                    id="nama" name="nama" value="{{ old('nama') }}"
                                                     placeholder="Masukkan nama lengkap" required>
-                                                @error('name')
+                                                @error('nama')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
 
-                                        <div class="col-12 mb-4">
-                                            <label for="email" class="form-label fw-bold">Alamat Email *</label>
+                                        <div class="col-md-6 mb-4">
+                                            <label for="no_ktp" class="form-label fw-bold">NIK *</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-primary text-white">
+                                                    <i class="fa fa-id-card"></i>
+                                                </span>
+                                                <input type="text"
+                                                    class="form-control @error('no_ktp') is-invalid @enderror"
+                                                    id="no_ktp" name="no_ktp" value="{{ old('no_ktp') }}"
+                                                    placeholder="Masukkan Nomor Induk Kependudukan" required>
+                                                @error('no_ktp')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 mb-4">
+                                            <label for="jenis_kelamin" class="form-label fw-bold">Jenis Kelamin *</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-primary text-white">
+                                                    <i class="fa fa-venus-mars"></i>
+                                                </span>
+                                                <select class="form-control @error('jenis_kelamin') is-invalid @enderror"
+                                                    id="jenis_kelamin" name="jenis_kelamin" required>
+                                                    <option value="">Pilih Jenis Kelamin</option>
+                                                    <option value="Laki-laki" {{ old('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                                                    <option value="Perempuan" {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+                                                </select>
+                                                @error('jenis_kelamin')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 mb-4">
+                                            <label for="agama" class="form-label fw-bold">Agama *</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-primary text-white">
+                                                    <i class="fa fa-pray"></i>
+                                                </span>
+                                                <select class="form-control @error('agama') is-invalid @enderror"
+                                                    id="agama" name="agama" required>
+                                                    <option value="">Pilih Agama</option>
+                                                    <option value="Islam" {{ old('agama') == 'Islam' ? 'selected' : '' }}>Islam</option>
+                                                    <option value="Kristen" {{ old('agama') == 'Kristen' ? 'selected' : '' }}>Kristen</option>
+                                                    <option value="Katolik" {{ old('agama') == 'Katolik' ? 'selected' : '' }}>Katolik</option>
+                                                    <option value="Hindu" {{ old('agama') == 'Hindu' ? 'selected' : '' }}>Hindu</option>
+                                                    <option value="Buddha" {{ old('agama') == 'Buddha' ? 'selected' : '' }}>Buddha</option>
+                                                    <option value="Konghucu" {{ old('agama') == 'Konghucu' ? 'selected' : '' }}>Konghucu</option>
+                                                </select>
+                                                @error('agama')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 mb-4">
+                                            <label for="pekerjaan" class="form-label fw-bold">Pekerjaan *</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-primary text-white">
+                                                    <i class="fa fa-briefcase"></i>
+                                                </span>
+                                                <input type="text"
+                                                    class="form-control @error('pekerjaan') is-invalid @enderror"
+                                                    id="pekerjaan" name="pekerjaan" value="{{ old('pekerjaan') }}"
+                                                    placeholder="Masukkan pekerjaan" required>
+                                                @error('pekerjaan')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <!-- Data Kontak -->
+                                        <div class="col-12 mb-4 mt-3">
+                                            <h5 class="text-primary mb-3 border-bottom pb-2">Data Kontak</h5>
+                                        </div>
+
+                                        <div class="col-md-6 mb-4">
+                                            <label for="email" class="form-label fw-bold">Alamat Email</label>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-primary text-white">
                                                     <i class="fa fa-envelope"></i>
@@ -68,7 +150,7 @@
                                                 <input type="email"
                                                     class="form-control @error('email') is-invalid @enderror"
                                                     id="email" name="email" value="{{ old('email') }}"
-                                                    placeholder="contoh: user@desa.id" required>
+                                                    placeholder="contoh: user@desa.id">
                                                 @error('email')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -76,33 +158,18 @@
                                         </div>
 
                                         <div class="col-md-6 mb-4">
-                                            <label for="password" class="form-label fw-bold">Password *</label>
+                                            <label for="telp" class="form-label fw-bold">Nomor Telepon *</label>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-primary text-white">
-                                                    <i class="fa fa-lock"></i>
+                                                    <i class="fa fa-phone"></i>
                                                 </span>
-                                                <input type="password"
-                                                    class="form-control @error('password') is-invalid @enderror"
-                                                    id="password" name="password" placeholder="Masukkan Password"
-                                                    required>
-                                                @error('password')
+                                                <input type="text"
+                                                    class="form-control @error('telp') is-invalid @enderror"
+                                                    id="telp" name="telp" value="{{ old('telp') }}"
+                                                    placeholder="Masukkan nomor telepon" required>
+                                                @error('telp')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
-                                            </div>
-
-                                        </div>
-
-                                        <div class="col-md-6 mb-4">
-                                            <label for="password_confirmation" class="form-label fw-bold">Konfirmasi
-                                                Password *</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text bg-primary text-white">
-                                                    <i class="fa fa-lock"></i>
-                                                </span>
-                                                <input type="password"
-                                                    class="form-control @error('password') is-invalid @enderror"
-                                                    id="password_confirmation" name="password_confirmation"
-                                                    placeholder="Ulangi password" required>
                                             </div>
                                         </div>
                                     </div>
@@ -129,8 +196,8 @@
                                     <div class="flex-grow-1 ms-3">
                                         <h6 class="mb-1">Informasi Penting</h6>
                                         <p class="mb-0 text-muted small">
-                                            Pastikan data yang dimasukkan sudah benar. User yang terdaftar akan dapat
-                                            mengakses sistem sesuai dengan hak akses yang diberikan.
+                                            Pastikan data yang dimasukkan sudah benar. Data yang bertanda * wajib diisi.
+                                            Bagian data akun hanya perlu diisi jika warga akan memiliki akses ke sistem desa.
                                         </p>
                                     </div>
                                 </div>
@@ -141,16 +208,15 @@
             </div>
         </div>
         <!-- Content End -->
-        <!-- Content End -->
-
 
         <!-- Footer Start -->
         @include('layouts.guest.footer')
         <!-- Footer End -->
 
         <!-- Back to Top -->
-        <a href="https://faq.whatsapp.com/5913398998672934/?locale=en_US" class="btn btn-lg btn-primary btn-lg-square back-to-top pt-2"><i
-            </i><img src="{{ asset(path: 'assets-guest/img/IconWa.png') }}" alt="{{ __('') }}"></a>
+        <a href="https://faq.whatsapp.com/5913398998672934/?locale=en_US" class="btn btn-lg btn-primary btn-lg-square back-to-top pt-2">
+            <img src="{{ asset(path: 'assets-guest/img/IconWa.png') }}" alt="{{ __('') }}">
+        </a>
 
     </div>
 

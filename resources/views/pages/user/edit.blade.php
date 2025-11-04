@@ -59,7 +59,7 @@
                                     </div>
                                 </div>
 
-                                <form action="{{ route('user.update', $dataUser->id) }}" method="POST">
+                                <form action="{{ route('users.update', $dataUser->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
                                     <div class="row">
@@ -130,7 +130,7 @@
                                     </div>
 
                                     <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-                                        <a href="{{ route('user.index') }}" class="btn btn-secondary">
+                                        <a href="{{ route('users.index') }}" class="btn btn-secondary">
                                             <i class="fa fa-arrow-left me-2"></i>Kembali ke Daftar
                                         </a>
                                         <div>

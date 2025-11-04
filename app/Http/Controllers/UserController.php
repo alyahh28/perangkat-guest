@@ -79,7 +79,7 @@ class UserController extends Controller
 
         $user->update($data);
 
-        return redirect()->route('pages.user.index')->with('success', 'User berhasil diupdate!');
+        return redirect()->route('users.index')->with('success', 'User berhasil diupdate!');
     }
 
     /**
@@ -90,6 +90,6 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        return redirect()->route('pages.user.index')->with('success', 'User berhasil dihapus!');
+        return redirect()->route('users.index')->with('success', 'User berhasil dihapus!');
     }
 }
