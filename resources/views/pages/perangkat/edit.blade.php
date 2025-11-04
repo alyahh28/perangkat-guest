@@ -152,11 +152,7 @@
         @include('layouts.guest.footer')
         <!-- Footer End -->
 
-         <!-- Back to Top -->
-        <a href="https://faq.whatsapp.com/5913398998672934/?locale=en_US" class="btn btn-lg btn-primary btn-lg-square back-to-top pt-2"><i
-            </i><img src="{{ asset(path: 'assets-guest/img/IconWa.png') }}" alt="{{ __('') }}"></a>
-
-    </div>
+         </div>
 
     {{-- START JS --}}
     @include('layouts.guest.js')

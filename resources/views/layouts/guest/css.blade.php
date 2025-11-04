@@ -26,11 +26,13 @@
 <!-- Customized Bootstrap Stylesheet -->
 <link href="{{ asset('assets-guest/css/bootstrap.min.css') }}" rel="stylesheet">
 
-<!-- Template Stylesheet -->
-<link href="{{ asset('assets-guest/css/style.css') }}" rel="stylesheet">
+
 
 <!-- Custom App CSS -->
 <link href="{{ asset('assets-guest/resources/css/app.css') }}" rel="stylesheet">
+
+<!-- Template Stylesheet -->
+<link href="{{ asset('assets-guest/css/style.css') }}" rel="stylesheet">
 <!-- END CSS -->
 
 {{-- css warga index --}}
@@ -603,5 +605,7 @@
         animation: fadeInUp 0.6s ease-out;
     }
 </style>
-
 {{--  css icon  --}}
+
+{{--  css WA  --}}
+<link type="text/css" href="{{ asset('assets-guest/css/floating.css') }}" rel="stylesheet">

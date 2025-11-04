@@ -1,3 +1,4 @@
+
 <!-- Footer Start -->
 <div class="container-fluid bg-primary text-light footer mt-5 pt-5 wow fadeIn" data-wow-delay="0.1s">
     <div class="container py-5 px-lg-5">
@@ -15,6 +16,7 @@
                     <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
+            
             <div class="col-md-6 col-lg-3">
                 <h5 class="text-white mb-4">Popular Link</h5>
                 <a class="btn btn-link" href="">About Us</a>
