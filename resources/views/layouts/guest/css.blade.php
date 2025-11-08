@@ -26,8 +26,6 @@
 <!-- Customized Bootstrap Stylesheet -->
 <link href="{{ asset('assets-guest/css/bootstrap.min.css') }}" rel="stylesheet">
 
-
-
 <!-- Custom App CSS -->
 <link href="{{ asset('assets-guest/resources/css/app.css') }}" rel="stylesheet">
 

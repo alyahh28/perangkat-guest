@@ -51,12 +51,6 @@
         @include('layouts.guest.footer')
         <!-- Footer End -->
 
-{{--  button WA  --}}
-<a href="https://wa.me/6281234567890?text=Halo%20Admin%2C%20saya%20ingin%20bertanya." class="whatsapp-float"
-    target="_blank" rel="noopener noreferrer">
-    <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp" />
-</a>
-
     </div>
 
     {{-- START JS --}}

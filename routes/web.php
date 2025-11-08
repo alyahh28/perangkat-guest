@@ -7,6 +7,7 @@ use App\Http\Controllers\GuestController;
 use App\Http\Controllers\WargaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PerangkatDesaController;
+use App\Http\Controllers\Controller;
 
 // Route untuk halaman home guest (landing page)
 Route::get('/', [GuestController::class, 'index']);
@@ -33,6 +34,10 @@ Route::resource('perangkat', PerangkatDesaController::class);
 // Routes untuk User
 Route::resource('users', UserController::class);
 
+// Routes untuk Hal Tentang
+Route::get('/tentang', function () {
+    return view('pages/tentang');
+})->name('tentang');
 
 
 

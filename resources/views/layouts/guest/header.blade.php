@@ -20,9 +20,10 @@
                     <i class="fas fa-info-circle me-1"></i>Tentang
                 </a>
 
-                <a href="{{ url('/perangkat.index') }}"
-                    class="nav-item nav-link {{ request()->is('perangkat') ? 'active' : '' }}">
-                    <i class="fas fa-info-circle me-1"></i>perangkat
+
+                <a href="{{ route('perangkat.index') }}"
+                    class="nav-item nav-link {{ request()->is('perangkat.*') ? 'active' : '' }}">
+                    <i class="fas fa-users me-2"></i>Perangkat
                 </a>
 
                 {{--  <a href="{{ route('perangkat.index') }}"
@@ -69,7 +70,8 @@
                             <i class="fas fa-bell"></i>
                             <span class="notification-badge">3</span>
                         </div>
-                        <ul class="dropdown-menu user-dropdown dropdown-menu-end" aria-labelledby="notificationDropdown">
+                        <ul class="dropdown-menu user-dropdown dropdown-menu-end"
+                            aria-labelledby="notificationDropdown">
                             <li>
                                 <h6 class="dropdown-header">Notifikasi Terbaru</h6>
                             </li>
@@ -100,12 +102,12 @@
                                 </a>
                             </li>
                         </ul>
-                        </div>
+                    </div>
 
                     <!-- Ikon Profil dengan Dropdown -->
                     <div class="nav-item dropdown">
-                        <div class="user-icon dropdown-toggle align-items-center" id="profileDropdown"
-                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="user-icon dropdown-toggle align-items-center" id="profileDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user me-2"></i>
                             <span class="user-name">Guest</span>
                         </div>
@@ -135,7 +137,7 @@
         </div>
     </nav>
 
-   <div class="py-5 bg-primary hero-header mb-5">
+    <div class="py-5 bg-primary hero-header mb-5">
         <div class="container my-5 py-5 px-lg-5">
             <div class="row g-5 py-5">
                 <div class="col-lg-6 text-center text-lg-start">
@@ -153,5 +155,11 @@
             </div>
         </div>
     </div>
+
+    {{-- BUTTON WA --}}
+    <a href="https://wa.me/6281234567890?text=Halo%20Admin%2C%20saya%20ingin%20bertanya." class="whatsapp-float"
+        target="_blank" rel="noopener noreferrer">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp" />
+    </a>
 </div>
 <!-- Navbar & Hero End -->
