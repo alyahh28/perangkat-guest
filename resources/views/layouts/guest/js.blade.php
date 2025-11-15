@@ -113,3 +113,25 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+{{-- js jabatan index --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Konfirmasi hapus
+        const deleteForms = document.querySelectorAll('form[action*="jabatan-lembaga"]');
+
+        deleteForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if (!confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Animasi cards
+        const cards = document.querySelectorAll('.jabatan-card, .card');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+    });
+</script>

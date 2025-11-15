@@ -142,7 +142,7 @@
         @include('layouts.guest.footer')
         <!-- Footer End -->
 
-       
+
     </div>
 {{-- end content --}}
 

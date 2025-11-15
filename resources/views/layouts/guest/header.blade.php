@@ -52,8 +52,24 @@
                                 <i class="fas fa-user-cog me-2"></i>Data User
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ route('lembaga.index') }}"
+                                class="dropdown-item {{ request()->is('lembaga*') ? 'active' : '' }}">
+                                <i class="fas fa-user-cog me-2"></i>Data Lembaga Desa
+                            </a>
+
+                        </li>
+                        <li>
+                        <li>
+                            <a href="{{ route('jabatan-lembaga.index') }}"
+                                class="dropdown-item {{ request()->is('jabatan-lembaga*') ? 'active' : '' }}">
+                                <i class="fas fa-user-tie me-2"></i>Data Jabatan Lembaga
+                            </a>
+                        </li>
+                        </li>
                     </ul>
                 </div>
+
 
                 <a href="#" class="nav-item nav-link {{ request()->is('kontak') ? 'active' : '' }}">
                     <i class="fas fa-address-book me-1"></i>Kontak
@@ -114,7 +130,7 @@
                         <ul class="dropdown-menu user-dropdown dropdown-menu-end" aria-labelledby="profileDropdown">
                             <li>
                                 <a class="dropdown-item" href="#">
-                                    <i class="fas fa-user-circle me-2"></i>Profil Saya
+                                    <i class="fas fa-user-circle me -2"></i>Profil Saya
                                 </a>
                             </li>
                             <li>

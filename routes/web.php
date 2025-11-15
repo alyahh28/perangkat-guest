@@ -1,13 +1,15 @@
 <?php
 
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\WargaController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LembagaDesaController;
 use App\Http\Controllers\PerangkatDesaController;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\JabatanLembagaController;
 
 // Route untuk halaman home guest (landing page)
 Route::get('/', [GuestController::class, 'index']);
@@ -39,5 +41,10 @@ Route::get('/tentang', function () {
     return view('pages/tentang');
 })->name('tentang');
 
+// CRUD Lembaga Desa
+Route::resource('lembaga', LembagaDesaController::class);
+
+// Route untuk Jabatan Lembaga
+Route::resource('jabatan-lembaga', JabatanLembagaController::class);
 
 
