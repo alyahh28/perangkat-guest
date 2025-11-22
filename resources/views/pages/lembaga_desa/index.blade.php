@@ -32,6 +32,39 @@
             </div>
         </div>
 
+        <div class="table-responsive">
+            <form method="GET" action="{{ route('warga.index') }}" onchange="this.form.submit()" class="mb-3">
+                <div class="row">
+                    <div class="col-md-2">
+                        <select name="gender" class="form-select">
+                            <option value="">All Status</option>
+                            <option value="Aktif" {{ request('Status') == 'Aktif' ? 'selected' : '' }}>
+                                Aktif
+                            </option>
+                            <option value="Tidak Aktif" {{ request('Status') == 'Tidak Aktif' ? 'selected' : '' }}>Tidak
+                                Aktif
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control" id="exampleInputIconRight"
+                                value="{{ request('search') }}" placeholder="Search" aria-label="Search">
+                            <button type="submit" class="input-group-text" id="basic-addon2">
+                                <svg class="icon icon-xxs" fill="currentColor" viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
         <!-- Content Section -->
         <div class="content-section">
             <div class="section-header mb-4">
@@ -39,7 +72,7 @@
                 <p class="section-subtitle">Kelola semua lembaga desa</p>
             </div>
 
-            @if($lembaga->count() > 0)
+            @if ($lembaga->count() > 0)
                 <div class="row g-4">
                     @foreach ($lembaga as $item)
                         <div class="col-lg-4 col-md-6">
@@ -64,7 +97,8 @@
                                         </div>
                                         <div class="info-row">
                                             <span class="info-label">Deskripsi:</span>
-                                            <span class="info-value">{{ $item->deskripsi ? Str::limit($item->deskripsi, 50) : 'Tidak ada deskripsi' }}</span>
+                                            <span
+                                                class="info-value">{{ $item->deskripsi ? Str::limit($item->deskripsi, 50) : 'Tidak ada deskripsi' }}</span>
                                         </div>
                                         <div class="info-row">
                                             <span class="info-label">Dibuat:</span>
@@ -75,17 +109,20 @@
 
                                 <div class="card-footer-section">
                                     <div class="action-buttons">
-                                        <a href="{{ route('lembaga.show', $item->lembaga_id) }}" class="btn btn-outline-primary btn-sm">
+                                        <a href="{{ route('lembaga.show', $item->lembaga_id) }}"
+                                            class="btn btn-outline-primary btn-sm">
                                             <i class="fa fa-eye me-1"></i>Detail
                                         </a>
-                                        <a href="{{ route('lembaga.edit', $item->lembaga_id) }}" class="btn btn-outline-warning btn-sm">
+                                        <a href="{{ route('lembaga.edit', $item->lembaga_id) }}"
+                                            class="btn btn-outline-warning btn-sm">
                                             <i class="fa fa-edit me-1"></i>Edit
                                         </a>
-                                        <form action="{{ route('lembaga.destroy', $item->lembaga_id) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('lembaga.destroy', $item->lembaga_id) }}" method="POST"
+                                            class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-outline-danger btn-sm"
-                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus lembaga ini?')">
+                                                onclick="return confirm('Apakah Anda yakin ingin menghapus lembaga ini?')">
                                                 <i class="fa fa-trash me-1"></i>Hapus
                                             </button>
                                         </form>
@@ -109,6 +146,9 @@
             @endif
         </div>
     </div>
+    <div class="mt-3">
+        {{ $lembaga->links('pagination::bootstrap-5') }}
+    </div>
 </div>
 {{-- end content --}}
 
@@ -118,4 +158,3 @@
 
 {{-- START JS --}}
 @include('layouts.guest.js')
-

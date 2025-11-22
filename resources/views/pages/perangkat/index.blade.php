@@ -45,6 +45,40 @@
                     </a>
                 </div>
 
+                <div class="table-responsive">
+                    <form method="GET" action="{{ route('warga.index') }}" onchange="this.form.submit()"
+                        class="mb-3">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <select name="gender" class="form-select">
+                                    <option value="">All Status</option>
+                                    <option value="Aktif" {{ request('Status') == 'Aktif' ? 'selected' : '' }}>
+                                        Aktif
+                                    </option>
+                                    <option value="Tidak Aktif"
+                                        {{ request('Status') == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input type="text" name="search" class="form-control" id="exampleInputIconRight"
+                                        value="{{ request('search') }}" placeholder="Search" aria-label="Search">
+                                    <button type="submit" class="input-group-text" id="basic-addon2">
+                                        <svg class="icon icon-xxs" fill="currentColor" viewBox="0 0 20 20"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd"
+                                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                                clip-rule="evenodd"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
                 <div class="perangkat-grid">
                     @forelse ($dataPerangkat as $perangkat)
                         <div class="perangkat-card">
@@ -137,6 +171,7 @@
                             </div>
                         </div>
                     @empty
+
                         <div class="col-12">
                             <div class="empty-state">
                                 <i class="fa fa-user-tie"></i>
@@ -148,27 +183,23 @@
                             </div>
                         </div>
                     @endforelse
+
                 </div>
 
+
                 <!-- Pagination -->
-                @if (isset($dataPerangkat) && method_exists($dataPerangkat, 'hasPages') && $dataPerangkat->hasPages())
-                    <div class="d-flex justify-content-center mt-5">
-                        <nav>
-                            {{ $dataPerangkat->links() }}
-                        </nav>
-                    </div>
-                @endif
+                <div class="mt-3">
+                    {{ $dataPerangkat->links('pagination::bootstrap-5') }}
+                </div>
+                <!-- Content End -->
+
+                <!-- Footer Start -->
+                @include('layouts.guest.footer')
+                <!-- Footer End -->
             </div>
-        </div>
-        <!-- Content End -->
 
-        <!-- Footer Start -->
-        @include('layouts.guest.footer')
-        <!-- Footer End -->
-    </div>
-
-    {{-- START JS --}}
-    @include('layouts.guest.js')
+            {{-- START JS --}}
+            @include('layouts.guest.js')
 
 
 </body>

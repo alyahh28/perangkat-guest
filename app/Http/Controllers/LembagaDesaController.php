@@ -7,9 +7,12 @@ use Illuminate\Http\Request;
 
 class LembagaDesaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $lembaga = LembagaDesa::orderBy('nama_lembaga')->get();
+        // $lembaga = LembagaDesa::orderBy('nama_lembaga')->paginate(10);
+        $lembaga = LembagaDesa::paginate(10);
+        $filterableColumns = ['Status'];
+        $searchTableColumns = ['first_name'];
         return view('pages.lembaga_desa.index', compact('lembaga')); // Perhatikan 'pages.'
     }
 

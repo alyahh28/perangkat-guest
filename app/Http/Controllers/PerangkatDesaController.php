@@ -12,9 +12,12 @@ class PerangkatDesaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data['dataPerangkat'] = PerangkatDesa::with('warga')->get();
+        // $data['dataPerangkat'] = PerangkatDesa::with('warga')->paginate(10);
+        $data['dataPerangkat'] = PerangkatDesa::paginate(10);
+        $filterableColumns = ['Status'];
+        $searchTableColumns = ['first_name'];
         return view('pages.perangkat.index', $data);
     }
 

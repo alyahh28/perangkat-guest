@@ -7,9 +7,11 @@ use Illuminate\Http\Request;
 
 class WargaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data['dataWarga'] = Warga::all();
+        $data['dataWarga'] = Warga::paginate(10);
+        $filterableColumns = ['Status'];
+        $searchTableColumns = ['first_name'];
         return view('pages.warga.index', $data);
     }
 

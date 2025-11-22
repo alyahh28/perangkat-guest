@@ -8,12 +8,15 @@ use Illuminate\Http\Request;
 
 class JabatanLembagaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $jabatan = JabatanLembaga::with('lembaga')
-            ->orderBy('level')
-            ->orderBy('nama_jabatan')
-            ->get();
+        $jabatan = JabatanLembaga::paginate(10);
+        // $jabatan = JabatanLembaga::with('lembaga')
+        //     ->orderBy('level')
+        //     ->orderBy('nama_jabatan')
+        //     ->paginate(10);
+        $filterableColumns = ['Status'];
+        $searchTableColumns = ['first_name'];
         return view('pages.jabatan_lembaga.index', compact('jabatan'));
     }
 
