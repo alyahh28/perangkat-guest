@@ -6,6 +6,7 @@ use App\Models\PerangkatDesa;
 use App\Models\Warga;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Builder; // Tambahkan import ini
 
 class PerangkatDesaController extends Controller
 {
@@ -14,10 +15,37 @@ class PerangkatDesaController extends Controller
      */
     public function index(Request $request)
     {
-        // $data['dataPerangkat'] = PerangkatDesa::with('warga')->paginate(10);
-        $data['dataPerangkat'] = PerangkatDesa::paginate(10);
-        $filterableColumns = ['Status'];
-        $searchTableColumns = ['first_name'];
+        $filterableColumns = ['status_aktif']; // Kolom untuk filter status
+        $searchTableColumns = ['jabatan', 'nip', 'kontak']; // Kolom yang bisa dicari
+
+        // Query dengan relasi warga
+        $query = PerangkatDesa::with('warga');
+
+        // Filter berdasarkan status aktif/tidak aktif
+        if ($request->has('status') && $request->status != '') {
+            if ($request->status == 'Aktif') {
+                $query->whereNull('periode_selesai')
+                      ->orWhere('periode_selesai', '>', now());
+            } elseif ($request->status == 'Tidak Aktif') {
+                $query->whereNotNull('periode_selesai')
+                      ->where('periode_selesai', '<=', now());
+            }
+        }
+
+        // Search berdasarkan nama warga, jabatan, atau NIP
+        if ($request->has('search') && $request->search != '') {
+            $query->where(function($q) use ($request) {
+                $q->where('jabatan', 'LIKE', '%' . $request->search . '%')
+                  ->orWhere('nip', 'LIKE', '%' . $request->search . '%')
+                  ->orWhere('kontak', 'LIKE', '%' . $request->search . '%')
+                  ->orWhereHas('warga', function($wargaQuery) use ($request) {
+                      $wargaQuery->where('nama', 'LIKE', '%' . $request->search . '%');
+                  });
+            });
+        }
+
+        $data['dataPerangkat'] = $query->paginate(10)->withQueryString();
+
         return view('pages.perangkat.index', $data);
     }
 

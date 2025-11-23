@@ -5,8 +5,6 @@
     {{-- START CSS --}}
     @include('layouts.guest.css')
     {{-- END CSS --}}
-
-
 </head>
 
 <body>
@@ -40,43 +38,49 @@
                         <h2 class="mb-1" style="color: #2c3e50; font-weight: 800;">Perangkat Desa</h2>
                         <p class="text-muted mb-0">Struktur pemerintahan desa</p>
                     </div>
-                    <a href="{{ route('perangkat.create') }}" class="btn btn-add">
+                    <a href="{{ route('perangkat.create') }}" class="btn btn-primary">
                         <i class="fa fa-plus me-2"></i>Tambah Perangkat Baru
                     </a>
                 </div>
 
+                <!-- Filter dan Search Form - Sesuai dengan tampilan Warga -->
                 <div class="table-responsive">
-                    <form method="GET" action="{{ route('warga.index') }}" onchange="this.form.submit()"
-                        class="mb-3">
+                    <form method="GET" action="{{ route('perangkat.index') }}" class="mb-3">
                         <div class="row">
+                            <!-- Filter Status -->
                             <div class="col-md-2">
-                                <select name="gender" class="form-select">
-                                    <option value="">All Status</option>
-                                    <option value="Aktif" {{ request('Status') == 'Aktif' ? 'selected' : '' }}>
+                                <select name="status" class="form-select" onchange="this.form.submit()">
+                                    <option value="">Semua Status</option>
+                                    <option value="Aktif" {{ request('status') == 'Aktif' ? 'selected' : '' }}>
                                         Aktif
                                     </option>
                                     <option value="Tidak Aktif"
-                                        {{ request('Status') == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif
+                                        {{ request('status') == 'Tidak Aktif' ? 'selected' : '' }}>
+                                        Tidak Aktif
                                     </option>
                                 </select>
                             </div>
-                            <div class="col-md-3">
+
+                            <!-- Search Input -->
+                            <div class="col-md-4">
                                 <div class="input-group">
-                                    <input type="text" name="search" class="form-control" id="exampleInputIconRight"
-                                        value="{{ request('search') }}" placeholder="Search" aria-label="Search">
-                                    <button type="submit" class="input-group-text" id="basic-addon2">
-                                        <svg class="icon icon-xxs" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd"
-                                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                                clip-rule="evenodd"></path>
-                                        </svg>
+                                    <input type="text" name="search" class="form-control"
+                                        value="{{ request('search') }}" placeholder="Cari nama, jabatan, atau NIP..."
+                                        aria-label="Search">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-search"></i>
                                     </button>
+
+                                    <!-- Clear All Filters -->
+                                    @if (request()->has('search') || request()->has('status'))
+                                        <a href="{{ route('perangkat.index') }}" class="btn btn-outline-secondary">
+                                            <i class="fa fa-times"></i> Clear All
+                                        </a>
+                                    @endif
                                 </div>
                             </div>
                         </div>
                     </form>
-
                 </div>
 
                 <div class="perangkat-grid">
@@ -86,83 +90,91 @@
                                 <div class="header-content">
                                     @if ($perangkat->foto)
                                         <img src="{{ asset('storage/' . $perangkat->foto) }}" class="foto-perangkat"
-                                            alt="{{ $perangkat->warga->nama }}">
+                                            alt="{{ $perangkat->warga->nama }}"
+                                            style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
                                     @else
-                                        <div class="avatar">
+                                        <div class="avatar"
+                                            style="width: 60px; height: 60px; border-radius: 50%; background: #007bff; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px;">
                                             {{ strtoupper(substr($perangkat->warga->nama, 0, 1)) }}
                                         </div>
                                     @endif
-                                    <div>
-                                        <div class="nama">
+                                    <div style="margin-left: 15px;">
+                                        <div class="nama" style="font-weight: bold; font-size: 18px;">
                                             <i class="fa fa-user-tie me-2"></i>{{ $perangkat->warga->nama }}
                                         </div>
-                                        <div class="jabatan">
+                                        <div class="jabatan" style="color: #6c757d; font-size: 14px;">
                                             {{ $perangkat->jabatan }}
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="card-body">
-                                <div class="info-item">
-                                    <span class="info-label">NIP</span>
-                                    <span class="info-value">
+                            <div class="card-body" style="padding: 20px;">
+                                <div class="info-item"
+                                    style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span class="info-label" style="color: #6c757d;">NIP</span>
+                                    <span class="info-value" style="font-weight: 500;">
                                         <i class="fa fa-id-card me-2"></i>
                                         {{ $perangkat->nip ?? '-' }}
                                     </span>
                                 </div>
 
-                                <div class="info-item">
-                                    <span class="info-label">Kontak</span>
-                                    <span class="info-value">
+                                <div class="info-item"
+                                    style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span class="info-label" style="color: #6c757d;">Kontak</span>
+                                    <span class="info-value" style="font-weight: 500;">
                                         <i class="fa fa-phone me-2"></i>
                                         {{ $perangkat->kontak ?? '-' }}
                                     </span>
                                 </div>
 
-                                <div class="info-item">
-                                    <span class="info-label">Periode Mulai</span>
-                                    <span class="info-value">
+                                <div class="info-item"
+                                    style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span class="info-label" style="color: #6c757d;">Periode Mulai</span>
+                                    <span class="info-value" style="font-weight: 500;">
                                         <i class="fa fa-calendar me-2"></i>
                                         {{ \Carbon\Carbon::parse($perangkat->periode_mulai)->format('d M Y') }}
                                     </span>
                                 </div>
 
-                                <div class="info-item">
-                                    <span class="info-label">Periode Selesai</span>
-                                    <span class="info-value">
+                                <div class="info-item"
+                                    style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span class="info-label" style="color: #6c757d;">Periode Selesai</span>
+                                    <span class="info-value" style="font-weight: 500;">
                                         <i class="fa fa-calendar me-2"></i>
                                         {{ $perangkat->periode_selesai ? \Carbon\Carbon::parse($perangkat->periode_selesai)->format('d M Y') : 'Sekarang' }}
                                     </span>
                                 </div>
 
-                                <div class="info-item">
-                                    <span class="info-label">Status</span>
+                                <div class="info-item"
+                                    style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span class="info-label" style="color: #6c757d;">Status</span>
                                     <span class="info-value">
                                         <span
-                                            class="status-badge {{ $perangkat->periode_selesai ? 'status-nonaktif' : 'status-aktif' }}">
+                                            class="status-badge {{ $perangkat->periode_selesai && \Carbon\Carbon::parse($perangkat->periode_selesai)->isPast() ? 'status-nonaktif' : 'status-aktif' }}"
+                                            style="padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; background: {{ $perangkat->periode_selesai && \Carbon\Carbon::parse($perangkat->periode_selesai)->isPast() ? '#dc3545' : '#28a745' }}; color: white;">
                                             <i class="fa fa-circle me-1" style="font-size: 0.5rem;"></i>
-                                            {{ $perangkat->periode_selesai ? 'Tidak Aktif' : 'Aktif' }}
+                                            {{ $perangkat->periode_selesai && \Carbon\Carbon::parse($perangkat->periode_selesai)->isPast() ? 'Tidak Aktif' : 'Aktif' }}
                                         </span>
                                     </span>
                                 </div>
                             </div>
 
-                            <div class="card-footer">
+                            <div class="card-footer" style="padding: 15px; background: #f8f9fa;">
                                 <div class="d-flex justify-content-between gap-2">
-                                    <button class="btn btn-action btn-detail flex-fill"
+                                    <button class="btn btn-primary flex-fill"
                                         onclick="showDetail({{ $perangkat->perangkat_id }})">
                                         <i class="fa fa-eye me-2"></i>Detail
                                     </button>
                                     <a href="{{ route('perangkat.edit', $perangkat->perangkat_id) }}"
-                                        class="btn btn-action btn-edit flex-fill">
+                                        class="btn btn-warning flex-fill" style="color: white;">
                                         <i class="fa fa-edit me-2"></i>Edit
                                     </a>
                                     <form action="{{ route('perangkat.destroy', $perangkat->perangkat_id) }}"
-                                        method="POST" style="display: inline;">
+                                        method="POST" style="display: inline; flex: 1;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-action flex-fill"
+                                        <button type="submit" class="btn btn-danger w-100"
                                             onclick="return confirm('Apakah Anda yakin ingin menghapus data perangkat ini?')">
                                             <i class="fa fa-trash me-2"></i>Hapus
                                         </button>
@@ -171,37 +183,34 @@
                             </div>
                         </div>
                     @empty
-
                         <div class="col-12">
-                            <div class="empty-state">
-                                <i class="fa fa-user-tie"></i>
+                            <div class="empty-state text-center py-5">
+                                <i class="fa fa-user-tie fa-3x text-muted mb-3"></i>
                                 <h3 class="mb-3" style="color: #495057;">Belum Ada Data Perangkat Desa</h3>
                                 <p class="mb-4">Silakan tambah data perangkat desa terlebih dahulu</p>
-                                <a href="{{ route('perangkat.create') }}" class="btn btn-add btn-lg">
+                                <a href="{{ route('perangkat.create') }}" class="btn btn-primary btn-lg">
                                     <i class="fa fa-plus me-2"></i>Tambah Perangkat Pertama
                                 </a>
                             </div>
                         </div>
                     @endforelse
-
                 </div>
-
 
                 <!-- Pagination -->
-                <div class="mt-3">
+                <div class="mt-4">
                     {{ $dataPerangkat->links('pagination::bootstrap-5') }}
                 </div>
-                <!-- Content End -->
-
-                <!-- Footer Start -->
-                @include('layouts.guest.footer')
-                <!-- Footer End -->
             </div>
+        </div>
+        <!-- Content End -->
 
-            {{-- START JS --}}
-            @include('layouts.guest.js')
+        <!-- Footer Start -->
+        @include('layouts.guest.footer')
+        <!-- Footer End -->
+    </div>
 
-
+    {{-- START JS --}}
+    @include('layouts.guest.js')
 </body>
 
 </html>

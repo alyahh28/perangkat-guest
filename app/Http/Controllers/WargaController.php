@@ -9,12 +9,23 @@ class WargaController extends Controller
 {
     public function index(Request $request)
     {
-        $data['dataWarga'] = Warga::paginate(10);
-        $filterableColumns = ['Status'];
-        $searchTableColumns = ['first_name'];
+        $filterableColumns = ['jenis_kelamin']; // Sesuaikan dengan kolom yang ada
+        $searchTableColumns = ['nama', 'no_ktp', 'pekerjaan']; // Kolom yang bisa dicari
+
+        $query = Warga::query();
+
+        // Apply filter
+        $query->filter($request, $filterableColumns);
+
+        // Apply search
+        $query->search($request, $searchTableColumns);
+
+        $data['dataWarga'] = $query->paginate(10)->withQueryString();
+
         return view('pages.warga.index', $data);
     }
 
+    // Method lainnya tetap sama...
     public function create()
     {
         return view('pages.warga.create');
@@ -39,7 +50,7 @@ class WargaController extends Controller
     public function edit($id)
     {
         $warga = Warga::findOrFail($id);
-    return view('pages.warga.edit', compact('warga'));
+        return view('pages.warga.edit', compact('warga'));
     }
 
     public function update(Request $request, $id)

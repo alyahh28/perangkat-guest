@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder; // Tambahkan import ini
 
 class LembagaDesa extends Model
 {
@@ -18,7 +19,7 @@ class LembagaDesa extends Model
         'kontak'
     ];
 
-      public function scopeFilter(Builder $query, $request, array $filterableColumns): Builder
+    public function scopeFilter(Builder $query, $request, array $filterableColumns): Builder
     {
         foreach ($filterableColumns as $column) {
             if ($request->filled($column)) {
@@ -37,5 +38,6 @@ class LembagaDesa extends Model
                 }
             });
         }
+        return $query;
     }
 }

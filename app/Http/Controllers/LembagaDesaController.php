@@ -4,21 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Models\LembagaDesa;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder; // Tambahkan import ini
 
 class LembagaDesaController extends Controller
 {
     public function index(Request $request)
     {
-        // $lembaga = LembagaDesa::orderBy('nama_lembaga')->paginate(10);
-        $lembaga = LembagaDesa::paginate(10);
-        $filterableColumns = ['Status'];
-        $searchTableColumns = ['first_name'];
-        return view('pages.lembaga_desa.index', compact('lembaga')); // Perhatikan 'pages.'
+        $searchTableColumns = ['nama_lembaga', 'deskripsi', 'kontak']; // Kolom yang bisa dicari
+
+        // Query dengan search
+        $query = LembagaDesa::query();
+
+        // Terapkan search jika ada
+        if ($request->has('search') && $request->search != '') {
+            $query->where(function($q) use ($request, $searchTableColumns) {
+                foreach ($searchTableColumns as $column) {
+                    $q->orWhere($column, 'LIKE', '%' . $request->search . '%');
+                }
+            });
+        }
+
+        $lembaga = $query->orderBy('nama_lembaga')->paginate(10)->withQueryString();
+
+        return view('pages.lembaga_desa.index', compact('lembaga'));
     }
 
     public function create()
     {
-        return view('pages.lembaga_desa.create'); // Perhatikan 'pages.'
+        return view('pages.lembaga_desa.create');
     }
 
     public function store(Request $request)
@@ -38,13 +51,13 @@ class LembagaDesaController extends Controller
     public function show($id)
     {
         $lembaga = LembagaDesa::findOrFail($id);
-        return view('pages.lembaga_desa.show', compact('lembaga')); // Perhatikan 'pages.'
+        return view('pages.lembaga_desa.show', compact('lembaga'));
     }
 
     public function edit($id)
     {
         $lembaga = LembagaDesa::findOrFail($id);
-        return view('pages.lembaga_desa.edit', compact('lembaga')); // Perhatikan 'pages.'
+        return view('pages.lembaga_desa.edit', compact('lembaga'));
     }
 
     public function update(Request $request, $id)

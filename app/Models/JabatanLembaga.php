@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder; // Tambahkan import ini
 
 class JabatanLembaga extends Model
 {
@@ -32,7 +33,7 @@ class JabatanLembaga extends Model
         return $this->belongsTo(LembagaDesa::class, 'lembaga_id', 'lembaga_id');
     }
 
-      public function scopeFilter(Builder $query, $request, array $filterableColumns): Builder
+    public function scopeFilter(Builder $query, $request, array $filterableColumns): Builder
     {
         foreach ($filterableColumns as $column) {
             if ($request->filled($column)) {
@@ -51,5 +52,6 @@ class JabatanLembaga extends Model
                 }
             });
         }
+        return $query;
     }
 }

@@ -5,19 +5,48 @@ namespace App\Http\Controllers;
 use App\Models\JabatanLembaga;
 use App\Models\LembagaDesa;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder; // Tambahkan import ini
 
 class JabatanLembagaController extends Controller
 {
     public function index(Request $request)
     {
-        $jabatan = JabatanLembaga::paginate(10);
-        // $jabatan = JabatanLembaga::with('lembaga')
-        //     ->orderBy('level')
-        //     ->orderBy('nama_jabatan')
-        //     ->paginate(10);
-        $filterableColumns = ['Status'];
-        $searchTableColumns = ['first_name'];
-        return view('pages.jabatan_lembaga.index', compact('jabatan'));
+        $searchTableColumns = ['nama_jabatan']; // Kolom yang bisa dicari
+
+        // Query dengan relasi lembaga
+        $query = JabatanLembaga::with('lembaga');
+
+        // Filter berdasarkan lembaga jika ada
+        if ($request->has('lembaga_id') && $request->lembaga_id != '') {
+            $query->where('lembaga_id', $request->lembaga_id);
+        }
+
+        // Filter berdasarkan level jika ada
+        if ($request->has('level') && $request->level != '') {
+            $query->where('level', $request->level);
+        }
+
+        // Terapkan search jika ada
+        if ($request->has('search') && $request->search != '') {
+            $query->where(function($q) use ($request, $searchTableColumns) {
+                foreach ($searchTableColumns as $column) {
+                    $q->orWhere($column, 'LIKE', '%' . $request->search . '%');
+                }
+                // Juga search berdasarkan nama lembaga
+                $q->orWhereHas('lembaga', function($lembagaQuery) use ($request) {
+                    $lembagaQuery->where('nama_lembaga', 'LIKE', '%' . $request->search . '%');
+                });
+            });
+        }
+
+        $jabatan = $query->orderBy('level')
+            ->orderBy('nama_jabatan')
+            ->paginate(10)
+            ->withQueryString();
+
+        $lembagaList = LembagaDesa::orderBy('nama_lembaga')->get();
+
+        return view('pages.jabatan_lembaga.index', compact('jabatan', 'lembagaList'));
     }
 
     public function create()

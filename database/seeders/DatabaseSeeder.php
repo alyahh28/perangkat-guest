@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Database\Seeders\JabatanSeeder;
 use Database\Seeders\LembagaSeeder;
+use Database\Seeders\PerangkatSeeder;
+use Database\Seeders\WargaSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,8 +25,11 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-        LembagaSeeder::class,
-        JabatanSeeder::class,
+            WargaSeeder::class,
+            LembagaDesaSeeder::class,
+            JabatanLembagaSeeder::class,
+            PerangkatDesaSeeder::class,
+
     ]);
 
     }

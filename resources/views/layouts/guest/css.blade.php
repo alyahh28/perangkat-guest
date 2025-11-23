@@ -1391,3 +1391,41 @@
     }
 }
 </style>
+
+<style>
+        .filter-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+        .form-select, .form-control {
+            height: 45px;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+        }
+        .btn-primary {
+            background: #007bff;
+            border: none;
+            border-radius: 8px;
+            height: 45px;
+        }
+        .btn-outline-secondary {
+            border-radius: 8px;
+            height: 45px;
+        }
+        .perangkat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .perangkat-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    </style>

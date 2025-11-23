@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Builder; // Tambahkan import ini
 
 class PerangkatDesa extends Model
 {
@@ -26,8 +27,8 @@ class PerangkatDesa extends Model
     {
         return $this->belongsTo(Warga::class, 'warga_id', 'warga_id');
     }
-    
-      public function scopeFilter(Builder $query, $request, array $filterableColumns): Builder
+
+    public function scopeFilter(Builder $query, $request, array $filterableColumns): Builder
     {
         foreach ($filterableColumns as $column) {
             if ($request->filled($column)) {
@@ -46,5 +47,21 @@ class PerangkatDesa extends Model
                 }
             });
         }
+        return $query;
+    }
+
+    // Scope untuk filter status aktif
+    public function scopeStatus($query, $status)
+    {
+        if ($status == 'Aktif') {
+            return $query->where(function($q) {
+                $q->whereNull('periode_selesai')
+                  ->orWhere('periode_selesai', '>', now());
+            });
+        } elseif ($status == 'Tidak Aktif') {
+            return $query->whereNotNull('periode_selesai')
+                         ->where('periode_selesai', '<=', now());
+        }
+        return $query;
     }
 }
