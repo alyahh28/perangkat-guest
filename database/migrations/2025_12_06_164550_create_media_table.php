@@ -12,19 +12,31 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('media', function (Blueprint $table) {
-            $table->id('media_id'); // Primary key dengan nama custom
-            $table->string('ref_table', 100); // Nama tabel yang direferensikan
-            $table->unsignedBigInteger('ref_id'); // ID dari tabel yang direferensikan
-            $table->string('file_name'); // Nama file
-            $table->text('caption')->nullable(); // Caption/keterangan gambar
-            $table->string('mime_type'); // Tipe MIME file
-            $table->integer('sort_order')->default(0); // Urutan tampil
 
-            // Index untuk performa query
-            $table->index(['ref_table', 'ref_id']);
-            $table->index('sort_order');
+            $table->id('media_id'); // Primary key dengan nama media_id
 
-            $table->timestamps(); // created_at dan updated_at
+
+            $table->string('ref_table', 50)->comment('Nama tabel referensi');  // Kolom untuk mereferensikan tabel lain
+
+
+            $table->unsignedBigInteger('ref_id')->comment('ID baris dari tabel referensi');  // Kolom untuk ID dari baris di tabel lain. Gunakan unsignedBigInteger.
+
+
+            $table->string('file_name')->comment('Nama file media yang disimpan'); // Nama file yang disimpan (harus ada)
+
+
+            $table->string('caption')->nullable()->comment('Keterangan atau deskripsi media');  // Keterangan atau deskripsi (opsional, bisa nullable)
+
+
+            $table->string('mime_type', 100)->comment('Tipe MIME file (misalnya: image/jpeg)');  // Tipe MIME file (harus ada)
+
+
+            $table->integer('sort_order')->nullable()->comment('Urutan tampilan media');  // Urutan tampilan (opsional, bisa nullable)
+
+            $table->timestamps();
+
+
+            $table->index(['ref_table', 'ref_id']);   // Menambahkan index untuk pencarian cepat berdasarkan ref_table dan ref_id
         });
     }
 

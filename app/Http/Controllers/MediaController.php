@@ -2,221 +2,135 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Media;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
+use App\Models\Media; // Pastikan menggunakan Model Media
+use Illuminate\Support\Facades\Storage; // Untuk operasi file
 
 class MediaController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua media.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $query = Media::query();
+        // Ambil semua data media, urutkan berdasarkan ID terbaru
+        $media = Media::orderByDesc('media_id')->paginate(10);
 
-        // Filter berdasarkan tabel referensi
-        if ($request->has('ref_table')) {
-            $query->where('ref_table', $request->ref_table);
-        }
-
-        // Filter berdasarkan ID referensi
-        if ($request->has('ref_id')) {
-            $query->where('ref_id', $request->ref_id);
-        }
-
-        // Urutkan berdasarkan sort_order
-        $query->orderBy('sort_order', 'asc');
-
-        $media = $query->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => $media,
-            'message' => 'Data media berhasil diambil'
-        ]);
+        return view('pages.media.index', compact('media'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Menampilkan form untuk membuat media baru.
+     */
+    public function create()
+    {
+        return view('pages.media.create');
+    }
+
+    /**
+     * Menyimpan media yang baru dibuat ke database.
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'ref_table' => 'required|string|max:100',
+        // 1. Validasi data yang masuk
+        $request->validate([
+            'ref_table' => 'required|string|max:50',
             'ref_id' => 'required|integer',
-            'file' => 'required|file|max:10240', // Max 10MB
-            'caption' => 'nullable|string',
-            'mime_type' => 'required|string',
-            'sort_order' => 'nullable|integer',
+            'caption' => 'nullable|string|max:255',
+            'file_upload' => 'required|file|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048', // Contoh validasi file
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors(),
-                'message' => 'Validasi gagal'
-            ], 422);
-        }
-
-        // Handle file upload
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
+        // 2. Proses upload file
+        if ($request->hasFile('file_upload')) {
+            $file = $request->file('file_upload');
             $fileName = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('media', $fileName, 'public');
-
-            $media = Media::create([
-                'ref_table' => $request->ref_table,
-                'ref_id' => $request->ref_id,
-                'file_name' => $fileName,
-                'caption' => $request->caption,
-                'mime_type' => $request->mime_type,
-                'sort_order' => $request->sort_order ?? 0,
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'data' => $media,
-                'message' => 'Media berhasil disimpan'
-            ], 201);
+            // Simpan file ke direktori 'public/uploads/media'
+            $path = $file->storeAs('public/uploads/media', $fileName);
+            $mimeType = $file->getMimeType();
+        } else {
+            return redirect()->back()->withErrors(['file_upload' => 'File tidak ditemukan.']);
         }
 
-        return response()->json([
-            'success' => false,
-            'message' => 'File tidak ditemukan'
-        ], 400);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show($id)
-    {
-        $media = Media::find($id);
-
-        if (!$media) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Media tidak ditemukan'
-            ], 404);
-        }
-
-        return response()->json([
-            'success' => true,
-            'data' => $media,
-            'message' => 'Media berhasil diambil'
+        // 3. Simpan data ke database
+        Media::create([
+            'ref_table' => $request->ref_table,
+            'ref_id' => $request->ref_id,
+            'file_name' => $fileName,
+            'caption' => $request->caption,
+            'mime_type' => $mimeType,
+            'sort_order' => $request->sort_order ?? 0, // Beri nilai default 0 jika kosong
         ]);
+
+        return redirect()->route('media.index')
+                         ->with('success', 'Media berhasil ditambahkan.');
     }
 
     /**
-     * Update the specified resource in storage.
+     * Menampilkan detail media tertentu (tidak terlalu umum untuk media, tapi disertakan).
      */
-    public function update(Request $request, $id)
+    public function show(Media $media)
     {
-        $media = Media::find($id);
+        return view('pages.media.show', compact('media'));
+    }
 
-        if (!$media) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Media tidak ditemukan'
-            ], 404);
-        }
+    /**
+     * Menampilkan form untuk mengedit media.
+     */
+    public function edit(Media $media)
+    {
+        return view('pages.media.edit', compact('media'));
+    }
 
-        $validator = Validator::make($request->all(), [
-            'caption' => 'nullable|string',
+    /**
+     * Memperbarui media tertentu di database.
+     */
+    public function update(Request $request, Media $media)
+    {
+        // 1. Validasi data yang masuk
+        $request->validate([
+            'caption' => 'nullable|string|max:255',
             'sort_order' => 'nullable|integer',
+            'file_upload' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048', // File opsional saat update
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors(),
-                'message' => 'Validasi gagal'
-            ], 422);
+        $dataToUpdate = [
+            'caption' => $request->caption,
+            'sort_order' => $request->sort_order,
+        ];
+
+        // 2. Proses upload/update file (jika ada file baru)
+        if ($request->hasFile('file_upload')) {
+            // Hapus file lama jika ada
+            Storage::delete('public/uploads/media/' . $media->file_name);
+
+            $file = $request->file('file_upload');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('public/uploads/media', $fileName);
+            $mimeType = $file->getMimeType();
+
+            $dataToUpdate['file_name'] = $fileName;
+            $dataToUpdate['mime_type'] = $mimeType;
         }
 
-        $media->update([
-            'caption' => $request->caption ?? $media->caption,
-            'sort_order' => $request->sort_order ?? $media->sort_order,
-        ]);
+        // 3. Update data di database
+        $media->update($dataToUpdate);
 
-        return response()->json([
-            'success' => true,
-            'data' => $media,
-            'message' => 'Media berhasil diupdate'
-        ]);
+        return redirect()->route('media.index')
+                         ->with('success', 'Media berhasil diperbarui.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Menghapus media tertentu dari database.
      */
-    public function destroy($id)
+    public function destroy(Media $media)
     {
-        $media = Media::find($id);
+        // 1. Hapus file fisik dari storage
+        Storage::delete('public/uploads/media/' . $media->file_name);
 
-        if (!$media) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Media tidak ditemukan'
-            ], 404);
-        }
-
-        // Hapus file dari storage
-        Storage::disk('public')->delete('media/' . $media->file_name);
-
-        // Hapus record dari database
+        // 2. Hapus data dari database
         $media->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Media berhasil dihapus'
-        ]);
+        return redirect()->route('media.index')
+                         ->with('success', 'Media berhasil dihapus.');
     }
-
-    /**
-     * Update sort order multiple media
-     */
-    public function updateSortOrder(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'media' => 'required|array',
-            'media.*.media_id' => 'required|integer',
-            'media.*.sort_order' => 'required|integer',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors(),
-                'message' => 'Validasi gagal'
-            ], 422);
-        }
-
-        foreach ($request->media as $item) {
-            Media::where('media_id', $item['media_id'])
-                ->update(['sort_order' => $item['sort_order']]);
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Urutan media berhasil diupdate'
-        ]);
-    }
-
-    /**
-     * Get media by reference
-     */
-    public function getByReference($table, $id)
-    {
-        $media = Media::byReference($table, $id)
-            ->ordered()
-            ->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => $media,
-            'message' => 'Media berdasarkan referensi berhasil diambil'
-        ]);
-    }
-}
+}   

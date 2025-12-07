@@ -9,30 +9,13 @@ class Media extends Model
 {
     use HasFactory;
 
-    /**
-     * Nama tabel yang digunakan
-     */
+    // Nama tabel yang direferensikan oleh model ini
     protected $table = 'media';
 
-    /**
-     * Nama primary key
-     */
+    // Primary key untuk tabel media
     protected $primaryKey = 'media_id';
 
-    /**
-     * Tipe data primary key
-     */
-    protected $keyType = 'int';
-
-    /**
-     * Menonaktifkan auto-increment? (default: true)
-     * Jika media_id bukan auto-increment, set false
-     */
-    public $incrementing = true;
-
-    /**
-     * Kolom yang dapat diisi secara massal
-     */
+    // Kolom yang dapat diisi secara massal (mass assignable)
     protected $fillable = [
         'ref_table',
         'ref_id',
@@ -42,68 +25,17 @@ class Media extends Model
         'sort_order',
     ];
 
-    /**
-     * Kolom yang harus disembunyikan dari array/JSON
-     */
-    protected $hidden = [];
-
-    /**
-     * Tipe data casting
-     */
+    // Kolom yang harus di-cast ke tipe data tertentu saat diambil
     protected $casts = [
-        'ref_id' => 'integer',
+        // 'ref_id' => 'integer', // Opsional, bisa ditambahkan jika perlu
         'sort_order' => 'integer',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
     ];
 
-    /**
-     * Relasi polymorphic: Mendapatkan parent model
-     */
-    public function model()
-    {
-        return $this->morphTo(__FUNCTION__, 'ref_table', 'ref_id');
-    }
-
-    /**
-     * Scope untuk mengambil media berdasarkan tabel referensi
-     */
-    public function scopeByReference($query, $table, $id = null)
-    {
-        $query->where('ref_table', $table);
-
-        if ($id) {
-            $query->where('ref_id', $id);
-        }
-
-        return $query;
-    }
-
-    /**
-     * Scope untuk mengurutkan berdasarkan sort_order
-     */
-    public function scopeOrdered($query)
-    {
-        return $query->orderBy('sort_order', 'asc');
-    }
-
-    /**
-     * Accessor untuk URL lengkap file (contoh)
-     */
-    public function getFileUrlAttribute()
-    {
-        return asset('storage/media/' . $this->file_name);
-    }
-
-    /**
-     * Accessor untuk tipe file (gambar/dokumen)
-     */
-    public function getFileTypeAttribute()
-    {
-        if (str_starts_with($this->mime_type, 'image/')) {
-            return 'image';
-        }
-
-        return 'document';
-    }
+    // Relasi ke model lain (opsional, untuk contoh)
+    // public function parent()
+    // {
+    //     // Relasi dinamis, tergantung pada nilai ref_table
+    //     $relatedModel = 'App\Models\\' . ucfirst(Str::singular($this->ref_table));
+    //     return $this->morphTo('ref', 'ref_table', 'ref_id');
+    // }
 }
