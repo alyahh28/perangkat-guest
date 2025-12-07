@@ -67,6 +67,17 @@
                                             @enderror
                                         </div>
 
+                                         <!-- role -->
+                                        <div class="mb-3">
+                                            <label for="role" class="form-label">role</label>
+                                            <select id="role" name="role" class="form-select">
+                                                <option value="">-- Pilih --</option>
+                                                <option value="Admin">Admin</option>
+                                                <option value="Warga">Warga</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
                                         <div class="col-md-6 mb-4">
                                             <label for="password" class="form-label required-field">Password</label>
                                             <div class="input-group">

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder; // Tambahkan import ini
+use Illuminate\Database\Eloquent\Builder;
 
 class LembagaDesa extends Model
 {
@@ -16,7 +16,8 @@ class LembagaDesa extends Model
     protected $fillable = [
         'nama_lembaga',
         'deskripsi',
-        'kontak'
+        'kontak',
+        'logo' // TAMBAHAN KOLOM LOGO
     ];
 
     public function scopeFilter(Builder $query, $request, array $filterableColumns): Builder
@@ -40,4 +41,14 @@ class LembagaDesa extends Model
         }
         return $query;
     }
+
+    // Getter untuk logo URL
+    public function getLogoUrlAttribute()
+    {
+        if ($this->logo) {
+            return asset('storage/logos/' . $this->logo);
+        }
+        return asset('storage/logos/default-logo.png'); // Logo default jika tidak ada
+    }
 }
+

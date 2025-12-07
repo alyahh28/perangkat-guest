@@ -18,8 +18,23 @@
                         </h4>
                     </div>
                     <div class="card-body p-4">
-                        <form action="{{ route('lembaga.store') }}" method="POST">
+                        <form action="{{ route('lembaga.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
+
+                            <!-- Logo Upload -->
+                            <div class="mb-4">
+                                <label for="logo" class="form-label fw-semibold">Logo Lembaga</label>
+                                <input type="file" class="form-control @error('logo') is-invalid @enderror"
+                                       id="logo" name="logo"
+                                       accept="image/*">
+                                @error('logo')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Format: JPG, PNG, GIF (Maksimal: 2MB)</small>
+                                <div class="mt-2">
+                                    <img id="logo-preview" src="#" alt="Preview Logo" style="max-width: 200px; display: none;" class="img-thumbnail">
+                                </div>
+                            </div>
 
                             <div class="mb-4">
                                 <label for="nama_lembaga" class="form-label fw-semibold">Nama Lembaga <span class="text-danger">*</span></label>
@@ -71,8 +86,29 @@
 {{-- end content --}}
 
 <!-- Footer Start -->
-        @include('layouts.guest.footer')
-        <!-- Footer End -->
+@include('layouts.guest.footer')
+<!-- Footer End -->
 
-        {{-- START JS --}}
-    @include('layouts.guest.js')
+{{-- START JS --}}
+@include('layouts.guest.js')
+
+<script>
+    // Preview logo sebelum upload
+    document.getElementById('logo').addEventListener('change', function(e) {
+        const preview = document.getElementById('logo-preview');
+        const file = e.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = 'none';
+        }
+    });
+</script>

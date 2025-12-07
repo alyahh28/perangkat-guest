@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('nama_lembaga', 100);
             $table->text('deskripsi')->nullable();
             $table->string('kontak', 50)->nullable();
+            $table->string('logo', 255)->nullable();
             $table->timestamps();
         });
     }

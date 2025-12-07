@@ -135,3 +135,24 @@
         });
     });
 </script>
+
+<script>
+    // Preview logo sebelum upload
+    document.getElementById('logo').addEventListener('change', function(e) {
+        const preview = document.getElementById('logo-preview');
+        const file = e.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = 'none';
+        }
+    });
+</script>

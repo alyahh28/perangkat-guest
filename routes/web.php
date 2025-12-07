@@ -47,4 +47,13 @@ Route::resource('lembaga', LembagaDesaController::class);
 // Route untuk Jabatan Lembaga
 Route::resource('jabatan-lembaga', JabatanLembagaController::class);
 
+Route::group(['middleware' => ['checkrole:Admin']], function () {
+     Route::get('user',[UserController::class, 'index'])->name('user.index');
+ });
 
+
+ Route::apiResource('media', MediaController::class);
+
+// Route tambahan
+Route::post('/media/sort-order', [MediaController::class, 'updateSortOrder']);
+Route::get('/media/reference/{table}/{id}', [MediaController::class, 'getByReference']);

@@ -119,6 +119,8 @@
                                         </span>
                                     </div>
 
+                                     <td>{{ $item->role }}</td>
+
                                     <!-- Password Hash Section -->
                                     <div class="info-item">
                                         <span class="info-label">Password )</span>

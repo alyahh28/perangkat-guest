@@ -18,9 +18,43 @@
                         </h4>
                     </div>
                     <div class="card-body p-4">
-                        <form action="{{ route('lembaga.update', $lembaga->lembaga_id) }}" method="POST">
+                        <form action="{{ route('lembaga.update', $lembaga->lembaga_id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
+
+                            <!-- Logo Upload -->
+                            <div class="mb-4">
+                                <label for="logo" class="form-label fw-semibold">Logo Lembaga</label>
+
+                                <!-- Logo Saat Ini -->
+                                @if($lembaga->logo)
+                                    <div class="mb-3">
+                                        <p class="text-muted mb-1">Logo saat ini:</p>
+                                        <img src="{{ $lembaga->logo_url }}" alt="Logo {{ $lembaga->nama_lembaga }}"
+                                             style="max-width: 150px; height: auto;" class="img-thumbnail">
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input" type="checkbox" name="remove_logo" id="remove_logo">
+                                            <label class="form-check-label text-danger" for="remove_logo">
+                                                Hapus logo saat ini
+                                            </label>
+                                        </div>
+                                    </div>
+                                @else
+                                    <p class="text-muted mb-2">Belum ada logo</p>
+                                @endif
+
+                                <!-- Upload Logo Baru -->
+                                <input type="file" class="form-control @error('logo') is-invalid @enderror"
+                                       id="logo" name="logo"
+                                       accept="image/*">
+                                @error('logo')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Format: JPG, PNG, GIF (Maksimal: 2MB)</small>
+                                <div class="mt-2">
+                                    <img id="logo-preview" src="#" alt="Preview Logo Baru" style="max-width: 200px; display: none;" class="img-thumbnail">
+                                </div>
+                            </div>
 
                             <div class="mb-4">
                                 <label for="nama_lembaga" class="form-label fw-semibold">Nama Lembaga <span class="text-danger">*</span></label>
@@ -72,8 +106,8 @@
 {{-- end content --}}
 
 <!-- Footer Start -->
-        @include('layouts.guest.footer')
-        <!-- Footer End -->
+@include('layouts.guest.footer')
+<!-- Footer End -->
 
-        {{-- START JS --}}
-    @include('layouts.guest.js')
+{{-- START JS --}}
+@include('layouts.guest.js')
