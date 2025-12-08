@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -13,6 +14,11 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        // Cek jika user belum login
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu!');
+        }
+
         $data['dataUsers'] = User::paginate(10);
         $filterableColumns = ['Status'];
         $searchTableColumns = ['first_name'];
@@ -24,6 +30,11 @@ class UserController extends Controller
      */
     public function create()
     {
+        // Cek jika user belum login
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu!');
+        }
+
         return view('pages.user.create');
     }
 
@@ -35,14 +46,17 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
+            'username' => 'required|string|max:20|unique:users,username',
             'password' => 'required|string|confirmed',
+            'role' => 'required|in:Admin,Warga',
         ]);
 
         User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'username' => $request->username,
             'password' => Hash::make($request->password),
-             'role' => 'user', // atau 'member', 'guest', dll
+            'role' => $request->role,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan!');
@@ -53,6 +67,11 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
+        // Cek jika user belum login
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu!');
+        }
+
         $data['dataUser'] = User::findOrFail($id);
         return view('pages.user.edit', $data);
     }
@@ -66,13 +85,17 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id, // Diperbaiki
+            'email' => 'required|email|unique:users,email,' . $id,
+            'username' => 'required|string|max:20|unique:users,username,' . $id,
             'password' => 'nullable|string|confirmed',
+            'role' => 'required|in:Admin,Warga',
         ]);
 
         $data = [
             'name' => $request->name,
             'email' => $request->email,
+            'username' => $request->username,
+            'role' => $request->role,
         ];
 
         // Update password hanya jika diisi

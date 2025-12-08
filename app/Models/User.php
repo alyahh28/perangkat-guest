@@ -6,7 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Builder; // Tambahkan import ini
+use Illuminate\Database\Eloquent\Builder;
 
 class User extends Authenticatable
 {
@@ -21,9 +21,10 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'username',
         'password',
-        'activiti', // Tambahkan ini jika kolom exist
         'role',
+        'activiti',
     ];
 
     /**
@@ -44,30 +45,30 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
+            'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
 
-   // User.php
-public function scopeFilter(Builder $query, $request, array $filterableColumns): Builder
-{
-    foreach ($filterableColumns as $column) {
-        if ($request->filled($column)) {
-            $query->where($column, $request->input($column));
-        }
-    }
-    return $query;
-}
-
-public function scopeSearch($query, $request, array $columns): Builder // Tambahkan return type
-{
-    if ($request->filled('search')) {
-        $query->where(function ($q) use ($request, $columns) {
-            foreach ($columns as $column) {
-                $q->orWhere($column, 'LIKE', '%' . $request->search . '%');
+    public function scopeFilter(Builder $query, $request, array $filterableColumns): Builder
+    {
+        foreach ($filterableColumns as $column) {
+            if ($request->filled($column)) {
+                $query->where($column, $request->input($column));
             }
-        });
+        }
+        return $query;
     }
-    return $query; // Pastikan selalu return query
-}
+
+    public function scopeSearch($query, $request, array $columns): Builder
+    {
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request, $columns) {
+                foreach ($columns as $column) {
+                    $q->orWhere($column, 'LIKE', '%' . $request->search . '%');
+                }
+            });
+        }
+        return $query;
+    }
 }

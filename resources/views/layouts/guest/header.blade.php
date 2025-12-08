@@ -1,4 +1,3 @@
-<!-- Navbar & Hero Start -->
 <div class="container-xxl position-relative p-0">
     <nav class="navbar navbar-expand-sm navbar-light px-4 px-lg-5 py-3 py-lg-0">
         <a href="" class="navbar-brand p-0">
@@ -20,16 +19,10 @@
                     <i class="fas fa-info-circle me-1"></i>Tentang
                 </a>
 
-
                 <a href="{{ route('perangkat.index') }}"
                     class="nav-item nav-link {{ request()->is('perangkat.*') ? 'active' : '' }}">
                     <i class="fas fa-users me-2"></i>Perangkat
                 </a>
-
-                {{--  <a href="{{ route('perangkat.index') }}"
-                    class="dropdown-item {{ request()->is('perangkat.*') ? 'active' : '' }}">
-                    <i class="fas fa-user-tie me-2"></i>Data Perangkat
-                </a>  --}}
 
                 <!-- Dropdown Menu Layanan -->
                 <div class="nav-item dropdown">
@@ -45,7 +38,6 @@
                             </a>
                         </li>
 
-
                         <li>
                             <a href="{{ route('users.index') }}"
                                 class="dropdown-item {{ request()->is('user.*') ? 'active' : '' }}">
@@ -57,19 +49,15 @@
                                 class="dropdown-item {{ request()->is('lembaga*') ? 'active' : '' }}">
                                 <i class="fas fa-user-cog me-2"></i>Data Lembaga Desa
                             </a>
-
                         </li>
-                        <li>
                         <li>
                             <a href="{{ route('jabatan-lembaga.index') }}"
                                 class="dropdown-item {{ request()->is('jabatan-lembaga*') ? 'active' : '' }}">
                                 <i class="fas fa-user-tie me-2"></i>Data Jabatan Lembaga
                             </a>
                         </li>
-                        </li>
                     </ul>
                 </div>
-
 
                 <a href="#" class="nav-item nav-link {{ request()->is('kontak') ? 'active' : '' }}">
                     <i class="fas fa-address-book me-1"></i>Kontak
@@ -79,75 +67,93 @@
             <!-- Ikon User, Notifikasi, dan Logout di Kanan -->
             <div class="navbar-nav ms-auto py-0 align-items-center" style="margin-right: 100px">
                 <div class="user-actions d-flex align-items-center gap-3">
-                    <!-- Ikon Notifikasi -->
-                    <div class="nav-item dropdown">
-                        <div class="user-icon position-relative" id="notificationDropdown" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-bell"></i>
-                            <span class="notification-badge">3</span>
-                        </div>
-                        <ul class="dropdown-menu user-dropdown dropdown-menu-end"
-                            aria-labelledby="notificationDropdown">
-                            <li>
-                                <h6 class="dropdown-header">Notifikasi Terbaru</h6>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-user-plus me-2 text-success"></i>
-                                    <small>Pembaruan data warga baru</small>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-key me-2 text-warning"></i>
-                                    <small>Permintaan akses dari user</small>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-chart-bar me-2 text-info"></i>
-                                    <small>Laporan bulanan telah tersedia</small>
-                                </a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <a class="dropdown-item text-center" href="#">
-                                    <i class="fas fa-list me-1"></i>Lihat Semua
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
 
-                    <!-- Ikon Profil dengan Dropdown -->
-                    <div class="nav-item dropdown">
-                        <div class="user-icon dropdown-toggle align-items-center" id="profileDropdown" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user me-2"></i>
-                            <span class="user-name">Guest</span>
+                    @if(Auth::check())
+                        <!-- Tampilkan menu untuk user yang sudah login -->
+
+                        <!-- Ikon Notifikasi -->
+                        <div class="nav-item dropdown">
+                            <div class="user-icon position-relative" id="notificationDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-bell"></i>
+                                <span class="notification-badge">3</span>
+                            </div>
+                            <ul class="dropdown-menu user-dropdown dropdown-menu-end"
+                                aria-labelledby="notificationDropdown">
+                                <li>
+                                    <h6 class="dropdown-header">Notifikasi Terbaru</h6>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="fas fa-user-plus me-2 text-success"></i>
+                                        <small>Pembaruan data warga baru</small>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="fas fa-key me-2 text-warning"></i>
+                                        <small>Permintaan akses dari user</small>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="fas fa-chart-bar me-2 text-info"></i>
+                                        <small>Laporan bulanan telah tersedia</small>
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item text-center" href="#">
+                                        <i class="fas fa-list me-1"></i>Lihat Semua
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
-                        <ul class="dropdown-menu user-dropdown dropdown-menu-end" aria-labelledby="profileDropdown">
-                            <li>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-user-circle me -2"></i>Profil Saya
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-cog me-2"></i>Pengaturan
-                                </a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ route('logout') }}">
-                                    <i class="fas fa-sign-out-alt me-2"></i>Keluar
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+
+                        <!-- Ikon Profil dengan Dropdown -->
+                        <div class="nav-item dropdown">
+                            <div class="user-icon dropdown-toggle align-items-center" id="profileDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user me-2"></i>
+                                <span class="user-name">
+                                    {{ Auth::user()->name ?? session('user_name') }}
+                                </span>
+                            </div>
+                            <ul class="dropdown-menu user-dropdown dropdown-menu-end" aria-labelledby="profileDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="fas fa-user-circle me-2"></i>Profil Saya
+                                    </a>
+                                </li>
+                                <li>
+                                    <div class="dropdown-item">
+                                        <small class="text-muted">
+                                            <i class="fas fa-clock me-1"></i>
+                                            Login terakhir: {{ session('last_login') ? \Carbon\Carbon::parse(session('last_login'))->format('d M Y H:i') : 'Sekarang' }}
+                                        </small>
+                                    </div>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('logout') }}">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Keluar
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    @else
+                        <!-- Tampilkan tombol login jika user belum login -->
+                        <div class="nav-item">
+                            <a href="{{ route('login') }}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-sign-in-alt me-1"></i>Login
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

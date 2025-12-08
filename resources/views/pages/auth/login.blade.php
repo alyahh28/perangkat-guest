@@ -21,11 +21,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- Libraries Stylesheet -->
-    <link href="{{ asset('assets-guest/lib/animate/animate.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets-guest/lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets-guest/lib/lightbox/css/lightbox.min.css') }}" rel="stylesheet">
-
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{{ asset('assets-guest/css/bootstrap.min.css') }}" rel="stylesheet">
 
@@ -176,7 +171,6 @@
 
     <!-- Login Wrapper Start -->
     <div class="login-wrapper">
-        <!-- MAIN CONTENT - TIDAK DIUBAH -->
         <div class="login-container">
             <div class="login-header">
                 <h2>👋 Login Guest</h2>
@@ -193,13 +187,19 @@
                 </div>
             @endif
 
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             <form action="{{ route('login.post') }}" method="POST">
                 @csrf
 
                 <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" value="{{ old('username') }}" required>
-                    @error('username')
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="{{ old('email') }}" required>
+                    @error('email')
                         <span class="text-error">{{ $message }}</span>
                     @enderror
                 </div>
@@ -210,8 +210,7 @@
                     @error('password')
                         <span class="text-error">{{ $message }}</span>
                     @enderror
-                    <small style="display: block; margin-top: 5px; color: #6c757d;">Min. 3 kar. & harus ada huruf
-                        kapital.</small>
+                    <small style="display: block; margin-top: 5px; color: #6c757d;">Min. 3 karakter.</small>
                 </div>
 
                 <button type="submit">LOGIN</button>
@@ -223,7 +222,6 @@
                 </p>
             </div>
         </div>
-        <!-- END MAIN CONTENT -->
     </div>
     <!-- Login Wrapper End -->
 

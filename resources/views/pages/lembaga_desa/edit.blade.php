@@ -18,85 +18,122 @@
                         </h4>
                     </div>
                     <div class="card-body p-4">
-                        <form action="{{ route('lembaga.update', $lembaga->lembaga_id) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('lembaga.update', $lembaga->lembaga_id) }}" method="POST"
+                            enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
 
+                            <!-- edit.blade.php - tambahkan di bagian form logo -->
                             <!-- Logo Upload -->
                             <div class="mb-4">
                                 <label for="logo" class="form-label fw-semibold">Logo Lembaga</label>
 
-                                <!-- Logo Saat Ini -->
-                                @if($lembaga->logo)
+                                <!-- Logo Single (backward compatibility) -->
+                                @if ($lembaga->logo)
                                     <div class="mb-3">
-                                        <p class="text-muted mb-1">Logo saat ini:</p>
-                                        <img src="{{ $lembaga->logo_url }}" alt="Logo {{ $lembaga->nama_lembaga }}"
-                                             style="max-width: 150px; height: auto;" class="img-thumbnail">
+                                        <p class="text-muted mb-1">Logo single (old):</p>
+                                        <img src="{{ asset('storage/logos/' . $lembaga->logo) }}"
+                                            alt="Logo {{ $lembaga->nama_lembaga }}"
+                                            style="max-width: 150px; height: auto;" class="img-thumbnail">
                                         <div class="form-check mt-2">
-                                            <input class="form-check-input" type="checkbox" name="remove_logo" id="remove_logo">
+                                            <input class="form-check-input" type="checkbox" name="remove_logo"
+                                                id="remove_logo">
                                             <label class="form-check-label text-danger" for="remove_logo">
-                                                Hapus logo saat ini
+                                                Hapus logo single
                                             </label>
                                         </div>
                                     </div>
-                                @else
-                                    <p class="text-muted mb-2">Belum ada logo</p>
                                 @endif
 
-                                <!-- Upload Logo Baru -->
-                                <input type="file" class="form-control @error('logo') is-invalid @enderror"
-                                       id="logo" name="logo"
-                                       accept="image/*">
-                                @error('logo')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                <small class="text-muted">Format: JPG, PNG, GIF (Maksimal: 2MB)</small>
-                                <div class="mt-2">
-                                    <img id="logo-preview" src="#" alt="Preview Logo Baru" style="max-width: 200px; display: none;" class="img-thumbnail">
+                                <!-- Logo Multiple dari Media Table -->
+                                @if ($lembaga->media->count() > 0)
+                                    <div class="mb-3">
+                                        <p class="text-muted">Logo multiple dari media:</p>
+                                        <div class="row">
+                                            @foreach ($lembaga->media as $media)
+                                                <div class="col-md-3 mb-2">
+                                                    <div class="position-relative">
+                                                        <img src="{{ asset('storage/uploads/' . $media->file_name) }}"
+                                                            alt="Logo" class="img-thumbnail"
+                                                            style="width: 100px; height: 100px; object-fit: cover;">
+                                                        <div class="form-check position-absolute"
+                                                            style="top: 5px; left: 5px;">
+                                                            <input type="checkbox" name="remove_media[]"
+                                                                value="{{ $media->media_id }}" class="form-check-input">
+                                                        </div>
+                                                        <input type="text" name="captions[{{ $media->media_id }}]"
+                                                            value="{{ $media->caption }}" placeholder="Caption"
+                                                            class="form-control form-control-sm mt-1">
+                                                        <input type="number" name="sort_orders[{{ $media->media_id }}]"
+                                                            value="{{ $media->sort_order }}" placeholder="Urutan"
+                                                            class="form-control form-control-sm mt-1">
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
+
+                                <div class="mb-3">
+                                    <label for="role" class="form-label">Role</label>
+                                    <select id="role" name="role" class="form-select" required>
+                                        <option value="">-- Pilih Role --</option>
+                                        <option value="Admin" {{ old('role') == 'Admin' ? 'selected' : '' }}>Admin
+                                        </option>
+                                        <option value="Warga" {{ old('role') == 'Warga' ? 'selected' : '' }}>Warga
+                                        </option>
+                                        <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>User
+                                        </option>
+                                    </select>
+                                    @error('role')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <!-- Upload Logo Baru (Multiple) -->
+                                <div class="mb-3">
+                                    <p class="text-muted">Upload logo baru (multiple):</p>
+                                    <div id="new-logos-container">
+                                        <div class="logo-upload-item mb-2">
+                                            <input type="file" name="logos[]" class="form-control" accept="image/*">
+                                            <div class="row mt-1">
+                                                <div class="col-md-6">
+                                                    <input type="text" name="captions_new[]"
+                                                        class="form-control form-control-sm" placeholder="Caption">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input type="number" name="sort_orders_new[]"
+                                                        class="form-control form-control-sm" placeholder="Urutan">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button type="button" class="btn btn-sm btn-secondary mt-2" id="add-logo">
+                                        <i class="fa fa-plus"></i> Tambah Logo Lain
+                                    </button>
                                 </div>
                             </div>
 
-                            <div class="mb-4">
-                                <label for="nama_lembaga" class="form-label fw-semibold">Nama Lembaga <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control form-control-lg @error('nama_lembaga') is-invalid @enderror"
-                                       id="nama_lembaga" name="nama_lembaga"
-                                       value="{{ old('nama_lembaga', $lembaga->nama_lembaga) }}" required maxlength="100"
-                                       placeholder="Masukkan nama lembaga">
-                                @error('nama_lembaga')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="deskripsi" class="form-label fw-semibold">Deskripsi Lembaga</label>
-                                <textarea class="form-control @error('deskripsi') is-invalid @enderror"
-                                          id="deskripsi" name="deskripsi" rows="5"
-                                          placeholder="Deskripsikan tentang lembaga ini">{{ old('deskripsi', $lembaga->deskripsi) }}</textarea>
-                                @error('deskripsi')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="kontak" class="form-label fw-semibold">Kontak</label>
-                                <input type="text" class="form-control @error('kontak') is-invalid @enderror"
-                                       id="kontak" name="kontak"
-                                       value="{{ old('kontak', $lembaga->kontak) }}" maxlength="50"
-                                       placeholder="Nomor telepon atau kontak lainnya">
-                                @error('kontak')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center mt-4">
-                                <a href="{{ route('lembaga.index') }}" class="btn btn-secondary btn-lg">
-                                    <i class="fa fa-arrow-left me-2"></i>Kembali
-                                </a>
-                                <button type="submit" class="btn btn-add btn-lg">
-                                    <i class="fa fa-save me-2"></i>Update Lembaga
-                                </button>
-                            </div>
-                        </form>
+                            <script>
+                                document.getElementById('add-logo').addEventListener('click', function() {
+                                    const container = document.getElementById('new-logos-container');
+                                    const newItem = document.createElement('div');
+                                    newItem.className = 'logo-upload-item mb-2';
+                                    newItem.innerHTML = `
+            <input type="file" name="logos[]" class="form-control" accept="image/*">
+            <div class="row mt-1">
+                <div class="col-md-6">
+                    <input type="text" name="captions_new[]" class="form-control form-control-sm" placeholder="Caption">
+                </div>
+                <div class="col-md-6">
+                    <input type="number" name="sort_orders_new[]" class="form-control form-control-sm" placeholder="Urutan">
+                </div>
+            </div>
+        `;
+                                    container.appendChild(newItem);
+                                });
+                            </script>
                     </div>
                 </div>
             </div>

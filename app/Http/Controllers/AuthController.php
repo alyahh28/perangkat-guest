@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -14,6 +15,11 @@ class AuthController extends Controller
      */
     public function index()
     {
+        // Cek jika user sudah login, redirect ke dashboard
+        if (Auth::check()) {
+            return redirect()->route('dashboard')->with('success', 'Anda sudah login!');
+        }
+
         return view('pages.auth.login');
     }
 
@@ -22,31 +28,47 @@ class AuthController extends Controller
      */
     public function showRegister()
     {
+        // Cek jika user sudah login, redirect ke dashboard
+        if (Auth::check()) {
+            return redirect()->route('dashboard')->with('info', 'Anda sudah login!');
+        }
+
         return view('pages.auth.register');
     }
 
     /**
      * Handle logika form login
      */
-  public function login(Request $request)
-{
-    $request->validate([
-        'username' => 'required|max:20',
-        'password' => 'required|min:3|regex:/[A-Z]/',
-    ], [
-        'username.required' => 'Username tidak boleh kosong',
-        'username.max' => 'Username maksimal 20 karakter',
-        'password.required' => 'Password tidak boleh kosong',
-        'password.min' => 'Password minimal 3 karakter',
-        'password.regex' => 'Password harus mengandung setidaknya satu huruf kapital'
-    ]);
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:3',
+        ], [
+            'email.required' => 'Email tidak boleh kosong',
+            'email.email' => 'Format email tidak valid',
+            'password.required' => 'Password tidak boleh kosong',
+            'password.min' => 'Password minimal 3 karakter',
+        ]);
 
-    // SELALU SUKSES TANPA VALIDASI PASSWORD KHUSUS
-    $data['username'] = $request->username;
-    $data['password'] = $request->password;
+        // Cari user berdasarkan email SAJA (tanpa username)
+        $user = User::where('email', $request->email)->first();
 
-    return view('pages.auth.login-succes', $data);
-}
+        if ($user && Hash::check($request->password, $user->password)) {
+            // Login user menggunakan Auth::login()
+            Auth::login($user);
+
+            // Simpan informasi terakhir login ke session
+            session(['last_login' => now()]);
+            session(['user_name' => $user->name]);
+            session(['user_email' => $user->email]);
+            session(['user_role' => $user->role]);
+
+            return redirect()->route('dashboard')->with('success', 'Login berhasil! Selamat datang ' . $user->name);
+        } else {
+            return back()->withErrors(['email' => 'Email atau password salah'])->withInput();
+        }
+    }
 
     /**
      * Handle logika form register (CREATE User)
@@ -58,11 +80,11 @@ class AuthController extends Controller
             return !preg_match('/[0-9]/', $value);
         });
 
-        // Validasi data
+        // Validasi data - HAPUS VALIDASI UNTUK USERNAME
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:50|no_numbers',
             'email' => 'required|email|max:100|unique:users,email',
-            // 'username' => 'required|max:20',
+            // HAPUS username dari validasi karena kolom tidak ada di database
             'password' => [
                 'required',
                 'min:3',
@@ -77,9 +99,7 @@ class AuthController extends Controller
             'email.email' => 'Format email tidak valid',
             'email.max' => 'Email maksimal 100 karakter',
             'email.unique' => 'Email sudah digunakan',
-            'username.required' => 'Username tidak boleh kosong',
-            'username.max' => 'Username maksimal 20 karakter',
-            'username.unique' => 'Username sudah digunakan',
+            // HAPUS pesan error untuk username
             'password.required' => 'Password tidak boleh kosong',
             'password.min' => 'Password minimal 3 karakter',
             'password.regex' => 'Password harus mengandung setidaknya satu huruf kapital',
@@ -93,13 +113,14 @@ class AuthController extends Controller
                 ->withInput();
         }
 
-        // Simpan data ke database (CREATE User)
+        // Simpan data ke database (CREATE User) - HAPUS username dari data yang disimpan
         try {
             User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'username' => $request->username,
+                // JANGAN simpan username karena kolom tidak ada
                 'password' => Hash::make($request->password),
+                'role' => 'user', // Default role untuk user baru
             ]);
 
             return redirect()->route('login')
@@ -115,9 +136,18 @@ class AuthController extends Controller
     /**
      * Handle logout
      */
-    public function logout()
+    public function logout(Request $request)
     {
-        session()->forget(['admin_logged_in', 'admin_username', 'admin_email', 'admin_role']);
+        // Logout user menggunakan Auth::logout()
+        Auth::logout();
+
+        // Hapus semua session dan regenerate token
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // Hapus session yang dibuat manual
+        session()->forget(['last_login', 'user_name', 'user_email', 'user_role']);
+
         return redirect()->route('login')
             ->with('success', 'Anda telah logout!');
     }

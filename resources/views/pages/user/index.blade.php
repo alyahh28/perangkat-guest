@@ -100,38 +100,41 @@
                                 </div>
 
                                 <div class="card-body">
-                                    <div class="info-item">
-                                        <span class="info-label">Bergabung</span>
-                                        <span class="info-value">
-                                            <i class="fa fa-calendar me-2"></i>
-                                            {{ $item->created_at->format('d M Y') }}
-                                        </span>
-                                    </div>
+    <div class="info-item">
+        <span class="info-label">Bergabung</span>
+        <span class="info-value">
+            <i class="fa fa-calendar me-2"></i>
+            {{ $item->created_at->format('d M Y') }}
+        </span>
+    </div>
 
-                                    <div class="info-item">
-                                        <span class="info-label">Status</span>
-                                        <span class="info-value">
-                                            <span
-                                                class="status-badge {{ $item->activiti == 'Aktif' ? 'status-aktif' : 'status-nonaktif' }}">
-                                                <i class="fa fa-circle me-1" style="font-size: 0.5rem;"></i>
-                                                {{ $item->activiti ?? 'Tidak Aktif' }}
-                                            </span>
-                                        </span>
-                                    </div>
+    <div class="info-item">
+        <span class="info-label">Status</span>
+        <span class="info-value">
+            <span class="status-badge {{ $item->activiti == 'Aktif' ? 'status-aktif' : 'status-nonaktif' }}">
+                <i class="fa fa-circle me-1" style="font-size: 0.5rem;"></i>
+                {{ $item->activiti ?? 'Tidak Aktif' }}
+            </span>
+        </span>
+    </div>
 
-                                     <td>{{ $item->role }}</td>
+    <div class="info-item">
+        <span class="info-label">Role</span>
+        <span class="info-value">
+            <span class="badge bg-info">{{ $item->role ?? 'User' }}</span>
+        </span>
+    </div>
 
-                                    <!-- Password Hash Section -->
-                                    <div class="info-item">
-                                        <span class="info-label">Password )</span>
-                                        <span class="info-value">
-                                            <small class="text-muted"
-                                                style="font-family: monospace; font-size: 0.75rem;">
-                                                =$item->password), 0, 20) }}...
-                                            </small>
-                                        </span>
-                                    </div>
-                                </div>
+    <!-- Password Hash Section -->
+    <div class="info-item">
+        <span class="info-label">Password</span>
+        <span class="info-value">
+            <small class="text-muted" style="font-family: monospace; font-size: 0.75rem;">
+                {{ substr($item->password, 0, 20) }}...
+            </small>
+        </span>
+    </div>
+</div>
 
                                 <div class="card-footer">
                                     <div class="d-flex justify-content-between gap-2">

@@ -227,6 +227,16 @@
                     @enderror
                 </div>
 
+                 <!-- role -->
+                                        <div class="mb-3">
+                                            <label for="role" class="form-label">role</label>
+                                            <select id="role" name="role" class="form-select">
+                                                <option value="">-- Pilih --</option>
+                                                <option value="Admin">Admin</option>
+                                                <option value="Warga">Warga</option>
+                                            </select>
+                                        </div>
+
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" value="{{ old('username') }}" required>

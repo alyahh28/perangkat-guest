@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -11,6 +12,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        // Tidak perlu Auth::check() lagi karena sudah ada middleware
         $stats = [
             'total_perangkat' => 15,
             'total_lembaga' => 8,

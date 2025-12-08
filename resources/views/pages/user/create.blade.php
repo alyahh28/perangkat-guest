@@ -67,7 +67,18 @@
                                             @enderror
                                         </div>
 
-                                         <!-- role -->
+                                        <div class="col-12 mb-4">
+                                            <label for="username" class="form-label required-field">Username</label>
+                                            <input type="text"
+                                                class="form-control @error('username') is-invalid @enderror"
+                                                id="username" name="username" value="{{ old('username') }}"
+                                                placeholder="Masukkan username" required>
+                                            @error('username')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        <!-- role -->
                                         <div class="mb-3">
                                             <label for="role" class="form-label">role</label>
                                             <select id="role" name="role" class="form-select">
@@ -78,58 +89,58 @@
                                         </div>
                                     </div>
 
-                                        <div class="col-md-6 mb-4">
-                                            <label for="password" class="form-label required-field">Password</label>
-                                            <div class="input-group">
-                                                <input type="password"
-                                                    class="form-control @error('password') is-invalid @enderror"
-                                                    id="password" name="password" required>
-                                                <span class="input-group-text password-toggle" id="togglePassword">
-                                                    <i class="fa fa-eye"></i>
-                                                </span>
-                                                @error('password')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-
+                                    <div class="col-md-6 mb-4">
+                                        <label for="password" class="form-label required-field">Password</label>
+                                        <div class="input-group">
+                                            <input type="password"
+                                                class="form-control @error('password') is-invalid @enderror"
+                                                id="password" name="password" required>
+                                            <span class="input-group-text password-toggle" id="togglePassword">
+                                                <i class="fa fa-eye"></i>
+                                            </span>
+                                            @error('password')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
 
-                                        <div class="col-md-6 mb-4">
-                                            <label for="password_confirmation"
-                                                class="form-label required-field">Konfirmasi Password</label>
-                                            <div class="input-group">
-                                                <input type="password"
-                                                    class="form-control @error('password') is-invalid @enderror"
-                                                    id="password_confirmation" name="password_confirmation"
-                                                    placeholder="Ulangi password" required>
-                                                <span class="input-group-text password-toggle"
-                                                    id="togglePasswordConfirmation">
-                                                    <i class="fa fa-eye"></i>
-                                                </span>
-                                            </div>
-                                        </div>
                                     </div>
 
-                                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-                                        <a href="{{ route('users.index') }}" class="btn btn-secondary">
-                                            <i class="fa fa-arrow-left me-2"></i>Kembali ke Daftar
-                                        </a>
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fa fa-save me-2"></i>Simpan User
-                                        </button>
+                                    <div class="col-md-6 mb-4">
+                                        <label for="password_confirmation" class="form-label required-field">Konfirmasi
+                                            Password</label>
+                                        <div class="input-group">
+                                            <input type="password"
+                                                class="form-control @error('password') is-invalid @enderror"
+                                                id="password_confirmation" name="password_confirmation"
+                                                placeholder="Ulangi password" required>
+                                            <span class="input-group-text password-toggle"
+                                                id="togglePasswordConfirmation">
+                                                <i class="fa fa-eye"></i>
+                                            </span>
+                                        </div>
                                     </div>
-                                </form>
                             </div>
+
+                            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                                <a href="{{ route('users.index') }}" class="btn btn-secondary">
+                                    <i class="fa fa-arrow-left me-2"></i>Kembali ke Daftar
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-save me-2"></i>Simpan User
+                                </button>
+                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Content End -->
+    </div>
+    <!-- Content End -->
 
-        <!-- Footer Start -->
-        @include('layouts.guest.footer')
-        <!-- Footer End -->
+    <!-- Footer Start -->
+    @include('layouts.guest.footer')
+    <!-- Footer End -->
 
 
     </div>

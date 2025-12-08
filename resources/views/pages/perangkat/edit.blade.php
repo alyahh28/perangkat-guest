@@ -131,6 +131,94 @@
                                         </div>
                                     </div>
 
+                                    <!-- edit.blade.php - tambahkan di bagian form setelah foto single -->
+<div class="col-12 mb-3">
+    <label class="form-label">Foto Tambahan (Multiple)</label>
+
+    <!-- Foto Existing dari Media Table -->
+    @if($dataPerangkat->media->count() > 0)
+        <div class="mb-3">
+            <p class="text-muted">Foto yang sudah diupload:</p>
+            <div class="row">
+                @foreach($dataPerangkat->media as $media)
+                    <div class="col-md-3 mb-2">
+                        <div class="position-relative">
+                            <img src="{{ asset('storage/uploads/' . $media->file_name) }}"
+                                 alt="Foto"
+                                 class="img-thumbnail"
+                                 style="width: 100px; height: 100px; object-fit: cover;">
+                            <div class="form-check position-absolute" style="top: 5px; left: 5px;">
+                                <input type="checkbox"
+                                       name="remove_media[]"
+                                       value="{{ $media->media_id }}"
+                                       class="form-check-input">
+                            </div>
+                            <input type="text"
+                                   name="captions[{{ $media->media_id }}]"
+                                   value="{{ $media->caption }}"
+                                   placeholder="Caption"
+                                   class="form-control form-control-sm mt-1">
+                            <input type="number"
+                                   name="sort_orders[{{ $media->media_id }}]"
+                                   value="{{ $media->sort_order }}"
+                                   placeholder="Urutan"
+                                   class="form-control form-control-sm mt-1">
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
+    <!-- Upload Foto Baru -->
+    <div id="new-fotos-container">
+        <div class="foto-upload-item mb-2">
+            <input type="file"
+                   name="fotos[]"
+                   class="form-control"
+                   accept="image/*">
+            <div class="row mt-1">
+                <div class="col-md-6">
+                    <input type="text"
+                           name="captions_new[]"
+                           class="form-control form-control-sm"
+                           placeholder="Caption">
+                </div>
+                <div class="col-md-6">
+                    <input type="number"
+                           name="sort_orders_new[]"
+                           class="form-control form-control-sm"
+                           placeholder="Urutan">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-sm btn-secondary mt-2" id="add-foto">
+        <i class="fa fa-plus"></i> Tambah Foto Lain
+    </button>
+</div>
+
+<script>
+    document.getElementById('add-foto').addEventListener('click', function() {
+        const container = document.getElementById('new-fotos-container');
+        const newItem = document.createElement('div');
+        newItem.className = 'foto-upload-item mb-2';
+        newItem.innerHTML = `
+            <input type="file" name="fotos[]" class="form-control" accept="image/*">
+            <div class="row mt-1">
+                <div class="col-md-6">
+                    <input type="text" name="captions_new[]" class="form-control form-control-sm" placeholder="Caption">
+                </div>
+                <div class="col-md-6">
+                    <input type="number" name="sort_orders_new[]" class="form-control form-control-sm" placeholder="Urutan">
+                </div>
+            </div>
+        `;
+        container.appendChild(newItem);
+    });
+</script>
+
                                     <div class="d-flex justify-content-between mt-4">
                                         <a href="{{ route('perangkat.index') }}" class="btn btn-secondary">
                                             <i class="fa fa-arrow-left me-2"></i>Kembali

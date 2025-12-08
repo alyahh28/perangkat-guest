@@ -48,9 +48,20 @@ Route::resource('lembaga', LembagaDesaController::class);
 // Route untuk Jabatan Lembaga
 Route::resource('jabatan-lembaga', JabatanLembagaController::class);
 
-Route::group(['middleware' => ['checkrole:Admin']], function () {
-     Route::get('user',[UserController::class, 'index'])->name('user.index');
+Route::group(['middleware' => ['checklogin']], function () {
+     Route::get('/pages/dashboard',[GuestController::class, 'index'])->name('pages.user.index');
  });
+
+ Route::group(['middleware' => ['checkrole:admin, warga']], function () {
+     Route::get('user',[UserController::class]);
+ });
+//  Route::group(['middleware' => ['checkrole:admin, warga']], function () {
+//     Route::resource('warga', WargaController::class);
+//     Route::resource('perangkat', PerangkatDesaController::class);
+//     Route::resource('lembaga', LembagaDesaController::class);
+//     Route::resource('jabatan-lembaga', JabatanLembagaController::class);
+//  });
+
 
 
  Route::apiResource('media', MediaController::class);
