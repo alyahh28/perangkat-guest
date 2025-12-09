@@ -99,13 +99,13 @@
 
                                         <!-- role -->
                                         <div class="mb-3">
-                                            <label for="role" class="form-label">role</label>
-                                            <select id="role" name="role" class="form-select">
-                                                <option value="">-- Pilih --</option>
-                                                <option value="Admin">Admin</option>
-                                                <option value="Warga">Warga</option>
-                                            </select>
-                                        </div>
+    <label class="form-label">Role Pengguna</label>
+    <select name="role" class="form-control">
+        <option value="User" {{ $user->role == 'User' ? 'selected' : '' }}>User</option>
+        <option value="Warga" {{ $user->role == 'Warga' ? 'selected' : '' }}>Warga</option>
+        <option value="Admin" {{ $user->role == 'Admin' ? 'selected' : '' }}>Admin</option>
+    </select>
+</div>
                                     </div>
 
                                     <div class="col-md-6 mb-4">

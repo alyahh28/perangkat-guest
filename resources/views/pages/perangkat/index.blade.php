@@ -9,20 +9,16 @@
 
 <body>
     <div class="container-xxl bg-white p-0">
-        <!-- Spinner Start -->
         <div id="spinner"
             class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
         </div>
-        <!-- Spinner End -->
-
         {{-- START HEADER --}}
         @include('layouts.guest.header')
         {{-- END HEADER --}}
 
-        <!-- Content Start -->
         <div class="container-xxl py-5">
             <div class="container px-lg-5">
                 @if (session('success'))
@@ -43,11 +39,9 @@
                     </a>
                 </div>
 
-                <!-- Filter dan Search Form - Sesuai dengan tampilan Warga -->
                 <div class="table-responsive">
                     <form method="GET" action="{{ route('perangkat.index') }}" class="mb-3">
                         <div class="row">
-                            <!-- Filter Status -->
                             <div class="col-md-2">
                                 <select name="status" class="form-select" onchange="this.form.submit()">
                                     <option value="">Semua Status</option>
@@ -61,7 +55,6 @@
                                 </select>
                             </div>
 
-                            <!-- Search Input -->
                             <div class="col-md-4">
                                 <div class="input-group">
                                     <input type="text" name="search" class="form-control"
@@ -71,7 +64,6 @@
                                         <i class="fa fa-search"></i>
                                     </button>
 
-                                    <!-- Clear All Filters -->
                                     @if (request()->has('search') || request()->has('status'))
                                         <a href="{{ route('perangkat.index') }}" class="btn btn-outline-secondary">
                                             <i class="fa fa-times"></i> Clear All
@@ -162,10 +154,11 @@
 
                             <div class="card-footer" style="padding: 15px; background: #f8f9fa;">
                                 <div class="d-flex justify-content-between gap-2">
-                                    <button class="btn btn-primary flex-fill"
-                                        onclick="showDetail({{ $perangkat->perangkat_id }})">
+                                    {{-- PERBAIKAN: Menggunakan tag <a> agar langsung masuk ke halaman show --}}
+                                    <a href="{{ route('perangkat.show', $perangkat->perangkat_id) }}" class="btn btn-primary flex-fill">
                                         <i class="fa fa-eye me-2"></i>Detail
-                                    </button>
+                                    </a>
+
                                     <a href="{{ route('perangkat.edit', $perangkat->perangkat_id) }}"
                                         class="btn btn-warning flex-fill" style="color: white;">
                                         <i class="fa fa-edit me-2"></i>Edit
@@ -196,18 +189,13 @@
                     @endforelse
                 </div>
 
-                <!-- Pagination -->
                 <div class="mt-4">
                     {{ $dataPerangkat->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </div>
-        <!-- Content End -->
-
-        <!-- Footer Start -->
         @include('layouts.guest.footer')
-        <!-- Footer End -->
-    </div>
+        </div>
 
     {{-- START JS --}}
     @include('layouts.guest.js')

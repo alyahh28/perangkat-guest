@@ -1,67 +1,45 @@
 <?php
-
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Builder; // Tambahkan import ini
 
 class PerangkatDesa extends Model
 {
-    protected $table = 'perangkat_desa';
+    use HasFactory;
+
+    protected $table      = 'perangkat_desa';
     protected $primaryKey = 'perangkat_id';
+
     protected $fillable = [
         'warga_id',
         'jabatan',
         'nip',
         'kontak',
+        'foto',
         'periode_mulai',
         'periode_selesai',
-        'foto',
+        'status_aktif',
     ];
 
-    /**
-     * Get the warga that owns the PerangkatDesa
-     */
-    public function warga(): BelongsTo
+    // Relasi ke Warga
+    public function warga()
     {
         return $this->belongsTo(Warga::class, 'warga_id', 'warga_id');
     }
 
-    public function scopeFilter(Builder $query, $request, array $filterableColumns): Builder
+    /**
+     * PERBAIKAN RELASI MEDIA
+     * Saya menghapus ->where('reference_table') yang bikin error.
+     * * PENTING: Periksa database tabel 'media' kamu.
+     * Kolom apa yang menyimpan ID Perangkat Desa?
+     * Jika namanya 'perangkat_id', biarkan kode di bawah ini.
+     * Jika namanya 'perangkat_desa_id' atau 'reference_id', ganti parameter kedua.
+     */
+    public function media()
     {
-        foreach ($filterableColumns as $column) {
-            if ($request->filled($column)) {
-                $query->where($column, $request->input($column));
-            }
-        }
-        return $query;
+        return $this->hasMany(Media::class, 'ref_id', 'perangkat_id')
+            ->where('ref_table', 'perangkat_desa');
     }
 
-    public function scopeSearch($query, $request, array $columns)
-    {
-        if ($request->filled('search')) {
-            $query->where(function ($q) use ($request, $columns) {
-                foreach ($columns as $column) {
-                    $q->orWhere($column, 'LIKE', '%' . $request->search . '%');
-                }
-            });
-        }
-        return $query;
-    }
-
-    // Scope untuk filter status aktif
-    public function scopeStatus($query, $status)
-    {
-        if ($status == 'Aktif') {
-            return $query->where(function($q) {
-                $q->whereNull('periode_selesai')
-                  ->orWhere('periode_selesai', '>', now());
-            });
-        } elseif ($status == 'Tidak Aktif') {
-            return $query->whereNotNull('periode_selesai')
-                         ->where('periode_selesai', '<=', now());
-        }
-        return $query;
-    }
 }

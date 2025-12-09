@@ -6,22 +6,14 @@ use App\Models\PerangkatDesa;
 use App\Models\Warga;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Database\Eloquent\Builder; // Tambahkan import ini
 
 class PerangkatDesaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
-        $filterableColumns = ['status_aktif']; // Kolom untuk filter status
-        $searchTableColumns = ['jabatan', 'nip', 'kontak']; // Kolom yang bisa dicari
-
-        // Query dengan relasi warga
         $query = PerangkatDesa::with('warga');
 
-        // Filter berdasarkan status aktif/tidak aktif
+        // Filter Status
         if ($request->has('status') && $request->status != '') {
             if ($request->status == 'Aktif') {
                 $query->whereNull('periode_selesai')
@@ -32,7 +24,7 @@ class PerangkatDesaController extends Controller
             }
         }
 
-        // Search berdasarkan nama warga, jabatan, atau NIP
+        // Search
         if ($request->has('search') && $request->search != '') {
             $query->where(function($q) use ($request) {
                 $q->where('jabatan', 'LIKE', '%' . $request->search . '%')
@@ -49,18 +41,12 @@ class PerangkatDesaController extends Controller
         return view('pages.perangkat.index', $data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $data['dataWarga'] = Warga::all();
         return view('pages.perangkat.create', $data);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -75,7 +61,6 @@ class PerangkatDesaController extends Controller
 
         $data = $request->all();
 
-        // Upload foto jika ada
         if ($request->hasFile('foto')) {
             $fotoPath = $request->file('foto')->store('perangkat_desa', 'public');
             $data['foto'] = $fotoPath;
@@ -83,12 +68,18 @@ class PerangkatDesaController extends Controller
 
         PerangkatDesa::create($data);
 
-        return redirect()->route('perangkat.index')->with('success', 'Data perangkat desa berhasil ditambahkan!');
+        return redirect()->route('perangkat.index')->with('success', 'Data berhasil ditambahkan!');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    // --- FUNGSI SHOW (DETAIL) ---
+    public function show($id)
+    {
+        // Sekarang ini tidak akan error karena Model sudah diperbaiki
+        $perangkat = PerangkatDesa::with(['warga', 'media'])->findOrFail($id);
+
+        return view('pages.perangkat.show', compact('perangkat'));
+    }
+
     public function edit(string $id)
     {
         $data['dataPerangkat'] = PerangkatDesa::findOrFail($id);
@@ -96,9 +87,6 @@ class PerangkatDesaController extends Controller
         return view('pages.perangkat.edit', $data);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $request->validate([
@@ -114,9 +102,7 @@ class PerangkatDesaController extends Controller
         $perangkat = PerangkatDesa::findOrFail($id);
         $data = $request->all();
 
-        // Upload foto jika ada
         if ($request->hasFile('foto')) {
-            // Hapus foto lama jika ada
             if ($perangkat->foto) {
                 Storage::disk('public')->delete($perangkat->foto);
             }
@@ -126,23 +112,19 @@ class PerangkatDesaController extends Controller
 
         $perangkat->update($data);
 
-        return redirect()->route('perangkat.index')->with('success', 'Data perangkat desa berhasil diupdate!');
+        return redirect()->route('perangkat.index')->with('success', 'Data berhasil diupdate!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $perangkat = PerangkatDesa::findOrFail($id);
 
-        // Hapus foto jika ada
         if ($perangkat->foto) {
             Storage::disk('public')->delete($perangkat->foto);
         }
 
         $perangkat->delete();
 
-        return redirect()->route('perangkat.index')->with('success', 'Data perangkat desa berhasil dihapus!');
+        return redirect()->route('perangkat.index')->with('success', 'Data berhasil dihapus!');
     }
 }

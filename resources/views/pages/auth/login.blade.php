@@ -8,23 +8,18 @@
     <meta content="" name="keywords">
     <meta content="" name="description">
 
-    <!-- Favicon -->
     <link href="{{ asset('assets-guest/favicon.ico') }}" rel="icon">
 
-    <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500&family=Roboto:wght@400;500;700&display=swap"
         rel="stylesheet">
 
-    <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- Customized Bootstrap Stylesheet -->
     <link href="{{ asset('assets-guest/css/bootstrap.min.css') }}" rel="stylesheet">
 
-    <!-- Template Stylesheet -->
     <link href="{{ asset('assets-guest/css/style.css') }}" rel="stylesheet">
 
     <style>
@@ -152,29 +147,22 @@
 </head>
 
 <body>
-    <!-- Spinner Start -->
     <div id="spinner"
         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
             <span class="sr-only">Loading...</span>
         </div>
     </div>
-    <!-- Spinner End -->
-
-    <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 px-lg-5 py-3 py-lg-0">
         <a href="{{ url('/') }}" class="navbar-brand p-0">
             <h1 class="m-0"><i class="fa fa-search me-2"></i>BINA <span class="fs-5">DESA</span></h1>
         </a>
     </nav>
-    <!-- Navbar End -->
-
-    <!-- Login Wrapper Start -->
     <div class="login-wrapper">
         <div class="login-container">
             <div class="login-header">
-                <h2>👋 Login Guest</h2>
-                <p>Masuk ke sistem Bina Desa</p>
+                <h2>👋 Login</h2>
+                <p>Masuk menggunakan Username</p>
             </div>
 
             @if ($errors->any())
@@ -188,7 +176,7 @@
             @endif
 
             @if (session('success'))
-                <div class="alert alert-success">
+                <div class="alert alert-success" style="background-color: #d4edda; color: #155724; border-color: #c3e6cb; padding: 12px 15px; border-radius: 5px; margin-bottom: 20px;">
                     {{ session('success') }}
                 </div>
             @endif
@@ -197,9 +185,9 @@
                 @csrf
 
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" value="{{ old('email') }}" required>
-                    @error('email')
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" value="{{ old('username') }}" required autofocus>
+                    @error('username')
                         <span class="text-error">{{ $message }}</span>
                     @enderror
                 </div>
@@ -210,7 +198,6 @@
                     @error('password')
                         <span class="text-error">{{ $message }}</span>
                     @enderror
-                    <small style="display: block; margin-top: 5px; color: #6c757d;">Min. 3 karakter.</small>
                 </div>
 
                 <button type="submit">LOGIN</button>
@@ -223,9 +210,6 @@
             </div>
         </div>
     </div>
-    <!-- Login Wrapper End -->
-
-    <!-- Footer Start -->
     <div class="container-fluid bg-primary text-light footer wow fadeIn" data-wow-delay="0.1s">
         <div class="container py-4">
             <div class="row">
@@ -238,9 +222,6 @@
             </div>
         </div>
     </div>
-    <!-- Footer End -->
-
-    <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('assets-guest/lib/wow/wow.min.js') }}"></script>
@@ -248,7 +229,6 @@
     <script src="{{ asset('assets-guest/lib/waypoints/waypoints.min.js') }}"></script>
     <script src="{{ asset('assets-guest/lib/owlcarousel/owl.carousel.min.js') }}"></script>
 
-    <!-- Template Javascript -->
     <script src="{{ asset('assets-guest/js/main.js') }}"></script>
 
     <script>

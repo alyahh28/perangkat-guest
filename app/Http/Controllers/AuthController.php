@@ -3,200 +3,126 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 class AuthController extends Controller
 {
-    /**
-     * Menampilkan halaman login
-     */
+    // Halaman Login
     public function index()
     {
-        // Cek jika user sudah login, redirect ke dashboard
-        if (Auth::check()) {
-            return redirect()->route('dashboard')->with('success', 'Anda sudah login!');
-        }
-
         return view('pages.auth.login');
     }
 
-    /**
-     * Menampilkan halaman registrasi
-     */
+    // Halaman Register
     public function showRegister()
     {
-        // Cek jika user sudah login, redirect ke dashboard
-        if (Auth::check()) {
-            return redirect()->route('dashboard')->with('info', 'Anda sudah login!');
-        }
-
         return view('pages.auth.register');
     }
 
-    /**
-     * Handle logika form login
-     */
+    // Proses Login
     public function login(Request $request)
     {
+        // 1. Validasi
         $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:3',
+            'username' => 'required',
+            'password' => 'required',
         ], [
-            'email.required' => 'Email tidak boleh kosong',
-            'email.email' => 'Format email tidak valid',
-            'password.required' => 'Password tidak boleh kosong',
-            'password.min' => 'Password minimal 3 karakter',
+            'username.required' => 'Username wajib diisi',
+            'password.required' => 'Password wajib diisi',
         ]);
 
-        // Cari user berdasarkan email SAJA (tanpa username)
-        $user = User::where('email', $request->email)->first();
+        // 2. Cek User
+        $user = User::where('username', $request->username)->first();
 
+        // 3. Cek Password & Login
         if ($user && Hash::check($request->password, $user->password)) {
-            // Login user menggunakan Auth::login()
             Auth::login($user);
+            $request->session()->regenerate();
 
-            // Simpan informasi terakhir login ke session
-            session(['last_login' => now()]);
-            session(['user_name' => $user->name]);
-            session(['user_email' => $user->email]);
-            session(['user_role' => $user->role]);
-
-            return redirect()->route('dashboard')->with('success', 'Login berhasil! Selamat datang ' . $user->name);
-        } else {
-            return back()->withErrors(['email' => 'Email atau password salah'])->withInput();
+            // 4. Redirect sesuai Role
+            if ($user->role === 'Admin') {
+                return redirect()->intended('/dashboard')
+                    ->with('success', 'Halo Admin, ' . $user->name . '!');
+            } elseif ($user->role === 'Warga') {
+                return redirect()->intended('/dashboard')
+                    ->with('success', 'Halo Warga, ' . $user->name . '!');
+            } else {
+                // User biasa
+                return redirect()->to('/')
+                    ->with('success', 'Selamat datang kembali, ' . $user->name . '!');
+            }
         }
+
+        // 5. Jika Gagal
+        return redirect()->back()
+            ->withErrors(['login_error' => 'Username atau Password salah.'])
+            ->withInput($request->only('username'));
     }
 
-    /**
-     * Handle logika form register (CREATE User)
-     */
+    // Proses Register
     public function register(Request $request)
     {
-        // Validasi custom untuk nama (tidak mengandung angka)
+        // 1. Validasi Custom (Tanpa Angka di Nama)
         Validator::extend('no_numbers', function ($attribute, $value, $parameters, $validator) {
             return !preg_match('/[0-9]/', $value);
         });
 
-        // Validasi data - HAPUS VALIDASI UNTUK USERNAME
+        // 2. Aturan Validasi
         $validator = Validator::make($request->all(), [
-            'name' => 'required|max:50|no_numbers',
-            'email' => 'required|email|max:100|unique:users,email',
-            // HAPUS username dari validasi karena kolom tidak ada di database
-            'password' => [
-                'required',
-                'min:3',
-                'regex:/[A-Z]/',
-            ],
+            'name'     => 'required|max:50|no_numbers',
+            'email'    => 'required|email|unique:users,email',
+            'username' => 'required|max:20|unique:users,username', // Pastikan kolom ini sudah ada di DB (Langkah 1)
+            'role'     => 'required|in:User,Warga,Admin',
+            'password' => 'required|min:3|regex:/[A-Z]/', // Minimal 3 char & ada huruf besar
             'password_confirmation' => 'required|same:password',
         ], [
-            'name.required' => 'Nama tidak boleh kosong',
-            'name.max' => 'Nama maksimal 50 karakter',
-            'name.no_numbers' => 'Nama tidak boleh mengandung angka',
-            'email.required' => 'Email harus diisi',
-            'email.email' => 'Format email tidak valid',
-            'email.max' => 'Email maksimal 100 karakter',
-            'email.unique' => 'Email sudah digunakan',
-            // HAPUS pesan error untuk username
-            'password.required' => 'Password tidak boleh kosong',
-            'password.min' => 'Password minimal 3 karakter',
-            'password.regex' => 'Password harus mengandung setidaknya satu huruf kapital',
-            'password_confirmation.same' => 'Konfirmasi password tidak sesuai',
+            'name.no_numbers'  => 'Nama tidak boleh mengandung angka',
+            'username.unique'  => 'Username sudah dipakai, pilih yang lain',
+            'email.unique'     => 'Email sudah terdaftar',
+            'password.regex'   => 'Password harus ada huruf besar',
+            'password_confirmation.same' => 'Konfirmasi password beda',
         ]);
 
-        // Cek validasi
         if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // Simpan data ke database (CREATE User) - HAPUS username dari data yang disimpan
+        // 3. Simpan User
         try {
             User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                // JANGAN simpan username karena kolom tidak ada
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'username' => $request->username,
+                'role'     => $request->role,
                 'password' => Hash::make($request->password),
-                'role' => 'user', // Default role untuk user baru
             ]);
 
             return redirect()->route('login')
-                ->with('success', 'Registrasi berhasil! Silakan Login');
+                ->with('success', 'Registrasi Sukses! Silakan Login.');
 
         } catch (\Exception $e) {
             return redirect()->back()
-                ->withErrors(['registration_error' => 'Terjadi kesalahan saat registrasi: ' . $e->getMessage()])
+                ->withErrors(['error' => 'Gagal menyimpan data. Hubungi admin.'])
                 ->withInput();
         }
     }
 
-    /**
-     * Handle logout
-     */
+    // Logout
     public function logout(Request $request)
     {
-        // Logout user menggunakan Auth::logout()
         Auth::logout();
-
-        // Hapus semua session dan regenerate token
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        // Hapus session yang dibuat manual
-        session()->forget(['last_login', 'user_name', 'user_email', 'user_role']);
-
-        return redirect()->route('login')
-            ->with('success', 'Anda telah logout!');
+        return redirect()->route('login')->with('success', 'Berhasil Logout');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function profile()
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $user = Auth::user(); // Ambil data user yang sedang login
+        return view('pages.profile', compact('user'));
     }
 }

@@ -51,13 +51,22 @@ class UserController extends Controller
             'role' => 'required|in:Admin,Warga',
         ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,
-        ]);
+        // Di method store (Simpan data)
+User::create([
+    'name' => $request->name,
+    'email' => $request->email,
+    'username' => $request->username,
+    'password' => Hash::make($request->password),
+    'role' => $request->role, // Tambahkan baris ini
+]);
+
+// Di method update (Edit data)
+$dataToUpdate = [
+    'name' => $request->name,
+    'email' => $request->email,
+    'username' => $request->username,
+    'role' => $request->role, // Tambahkan baris ini
+];
 
         return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan!');
     }
@@ -65,6 +74,16 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
+
+    public function show($id)
+{
+    // Cari user berdasarkan ID, jika tidak ketemu akan error 404
+    $user = \App\Models\User::findOrFail($id);
+
+    // Kembalikan ke view show dengan membawa data $user
+    return view('pages.user.show', compact('user'));
+}
+
     public function edit(string $id)
     {
         // Cek jika user belum login

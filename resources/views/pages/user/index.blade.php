@@ -5,32 +5,24 @@
     {{-- START CSS --}}
     @include('layouts.guest.css')
     {{-- END CSS --}}
-
-
 </head>
-
-{{-- start content --}}
 
 <body>
     <div class="container-xxl bg-white p-0">
-        <!-- Spinner Start -->
         <div id="spinner"
             class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
         </div>
-        <!-- Spinner End -->
-
         {{-- START HEADER --}}
-        <!-- Navbar & Hero Start -->
         @include('layouts.guest.header')
-        <!-- Navbar & Hero End -->
         {{-- END HEADER --}}
 
-        <!-- Content Start -->
         <div class="container-xxl py-5">
             <div class="container px-lg-5">
+
+                {{-- Alert Success --}}
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         <i class="fa fa-check-circle me-2"></i>
@@ -39,6 +31,7 @@
                     </div>
                 @endif
 
+                {{-- Header Judul & Tombol Tambah --}}
                 <div class="d-flex justify-content-between align-items-center mb-5">
                     <div>
                         <h2 class="mb-1" style="color: #2c3e50; font-weight: 800;">Daftar User</h2>
@@ -50,9 +43,9 @@
                 </div>
 
                 <div class="table-responsive">
+                    {{-- Form Pencarian & Filter --}}
                     <form method="GET" action="{{ route('users.index') }}" class="mb-3">
                         <div class="row">
-                            <!-- Filter Status -->
                             <div class="col-md-2">
                                 <select name="activiti" class="form-select" onchange="this.form.submit()">
                                     <option value="">Semua Status</option>
@@ -66,7 +59,6 @@
                                 </select>
                             </div>
 
-                            <!-- Search Input -->
                             <div class="col-md-4">
                                 <div class="input-group">
                                     <input type="text" name="search" class="form-control"
@@ -76,7 +68,6 @@
                                         <i class="fa fa-search"></i>
                                     </button>
 
-                                    <!-- Clear All Filters -->
                                     @if (request()->has('search') || request()->has('activiti'))
                                         <a href="{{ route('users.index') }}" class="btn btn-outline-secondary">
                                             <i class="fa fa-times"></i> Clear All
@@ -87,6 +78,7 @@
                         </div>
                     </form>
 
+                    {{-- Grid Daftar User --}}
                     <div class="user-grid">
                         @forelse ($dataUsers as $item)
                             <div class="user-card">
@@ -100,51 +92,54 @@
                                 </div>
 
                                 <div class="card-body">
-    <div class="info-item">
-        <span class="info-label">Bergabung</span>
-        <span class="info-value">
-            <i class="fa fa-calendar me-2"></i>
-            {{ $item->created_at->format('d M Y') }}
-        </span>
-    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Bergabung</span>
+                                        <span class="info-value">
+                                            <i class="fa fa-calendar me-2"></i>
+                                            {{ $item->created_at->format('d M Y') }}
+                                        </span>
+                                    </div>
 
-    <div class="info-item">
-        <span class="info-label">Status</span>
-        <span class="info-value">
-            <span class="status-badge {{ $item->activiti == 'Aktif' ? 'status-aktif' : 'status-nonaktif' }}">
-                <i class="fa fa-circle me-1" style="font-size: 0.5rem;"></i>
-                {{ $item->activiti ?? 'Tidak Aktif' }}
-            </span>
-        </span>
-    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Status</span>
+                                        <span class="info-value">
+                                            <span class="status-badge {{ $item->activiti == 'Aktif' ? 'status-aktif' : 'status-nonaktif' }}">
+                                                <i class="fa fa-circle me-1" style="font-size: 0.5rem;"></i>
+                                                {{ $item->activiti ?? 'Tidak Aktif' }}
+                                            </span>
+                                        </span>
+                                    </div>
 
-    <div class="info-item">
-        <span class="info-label">Role</span>
-        <span class="info-value">
-            <span class="badge bg-info">{{ $item->role ?? 'User' }}</span>
-        </span>
-    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Role</span>
+                                        <span class="info-value">
+                                            <span class="badge bg-info">{{ $item->role ?? 'User' }}</span>
+                                        </span>
+                                    </div>
 
-    <!-- Password Hash Section -->
-    <div class="info-item">
-        <span class="info-label">Password</span>
-        <span class="info-value">
-            <small class="text-muted" style="font-family: monospace; font-size: 0.75rem;">
-                {{ substr($item->password, 0, 20) }}...
-            </small>
-        </span>
-    </div>
-</div>
+                                    <div class="info-item">
+                                        <span class="info-label">Password</span>
+                                        <span class="info-value">
+                                            <small class="text-muted" style="font-family: monospace; font-size: 0.75rem;">
+                                                {{ substr($item->password, 0, 20) }}...
+                                            </small>
+                                        </span>
+                                    </div>
+                                </div>
 
                                 <div class="card-footer">
                                     <div class="d-flex justify-content-between gap-2">
-                                        <button class="btn btn-action btn-detail flex-fill">
+                                        {{-- TOMBOL DETAIL (SUDAH DIPERBAIKI) --}}
+                                        <a href="{{ route('users.show', $item->id) }}" class="btn btn-action btn-detail flex-fill">
                                             <i class="fa fa-eye me-2"></i>Detail
-                                        </button>
-                                        <a href="{{ route('users.edit', $item->id) }}"
-                                            class="btn btn-action btn-edit flex-fill">
+                                        </a>
+
+                                        {{-- Tombol Edit --}}
+                                        <a href="{{ route('users.edit', $item->id) }}" class="btn btn-action btn-edit flex-fill">
                                             <i class="fa fa-edit me-2"></i>Edit
                                         </a>
+
+                                        {{-- Tombol Hapus --}}
                                         <form action="{{ route('users.destroy', $item->id) }}" method="POST"
                                             style="display: inline;">
                                             @csrf
@@ -171,29 +166,19 @@
                         @endforelse
                     </div>
 
-                    <!-- Pagination -->
                     <div class="mt-3">
                         {{ $dataUsers->links('pagination::bootstrap-5') }}
                     </div>
 
                 </div>
-
             </div>
-            <!-- Content End -->
-
-            <!-- Footer Start -->
-            @include('layouts.guest.footer')
-            <!-- Footer End -->
-
-
         </div>
-        {{-- end content --}}
+        @include('layouts.guest.footer')
+        </div>
 
-        {{-- START JS --}}
-        @include('layouts.guest.js')
-        {{-- END JS --}}
-
+    {{-- START JS --}}
+    @include('layouts.guest.js')
+    {{-- END JS --}}
 
 </body>
-
 </html>

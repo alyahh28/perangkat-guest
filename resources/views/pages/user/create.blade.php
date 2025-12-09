@@ -80,13 +80,13 @@
 
                                         <!-- role -->
                                         <div class="mb-3">
-                                            <label for="role" class="form-label">role</label>
-                                            <select id="role" name="role" class="form-select">
-                                                <option value="">-- Pilih --</option>
-                                                <option value="Admin">Admin</option>
-                                                <option value="Warga">Warga</option>
-                                            </select>
-                                        </div>
+    <label class="form-label">Role Pengguna</label>
+    <select name="role" class="form-control">
+        <option value="User">User (Akses Terbatas)</option>
+        <option value="Warga">Warga (Akses Desa)</option>
+        <option value="Admin">Admin (Akses Penuh)</option>
+    </select>
+</div>
                                     </div>
 
                                     <div class="col-md-6 mb-4">

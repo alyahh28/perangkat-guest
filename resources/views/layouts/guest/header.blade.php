@@ -123,9 +123,9 @@
                             </div>
                             <ul class="dropdown-menu user-dropdown dropdown-menu-end" aria-labelledby="profileDropdown">
                                 <li>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="fas fa-user-circle me-2"></i>Profil Saya
-                                    </a>
+                                    <a class="dropdown-item" href="{{ route('profile') }}">
+    <i class="fas fa-user-circle me-2"></i>Profil Saya
+</a>
                                 </li>
                                 <li>
                                     <div class="dropdown-item">

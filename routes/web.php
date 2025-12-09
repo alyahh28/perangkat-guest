@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
@@ -12,60 +11,62 @@ use App\Http\Controllers\LembagaDesaController;
 use App\Http\Controllers\PerangkatDesaController;
 use App\Http\Controllers\JabatanLembagaController;
 
-// Route untuk halaman home guest (landing page)
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
+// --- HALAMAN PUBLIK (Bisa diakses siapa saja) ---
 Route::get('/', [GuestController::class, 'index']);
 Route::get('/pages/dashboard', [GuestController::class, 'index']);
 
-// Route untuk autentikasi
-Route::get('/auth', [AuthController::class, 'index'])->name('login');
-Route::post('/auth/login', [AuthController::class, 'login'])->name('login.post');
-
-// Route untuk Register
-Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::post('/register', [AuthController::class, 'register'])->name('register.post');
-
-// Route untuk Logout
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-// Route dashboard - INI YANG HARUS DIPERBAIKI
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-// Route resources
-Route::resource('warga', WargaController::class);
-
-Route::resource('perangkat', PerangkatDesaController::class);
-
-// Routes untuk User
-Route::resource('users', UserController::class);
-
-// Routes untuk Hal Tentang
+// Halaman Tentang
 Route::get('/tentang', function () {
     return view('pages/tentang');
 })->name('tentang');
 
-// CRUD Lembaga Desa
-Route::resource('lembaga', LembagaDesaController::class);
+Route::resource('users', UserController::class);
 
-// Route untuk Jabatan Lembaga
-Route::resource('jabatan-lembaga', JabatanLembagaController::class);
+// --- OTENTIKASI (Login & Register) ---
+// Kita gunakan middleware 'guest' agar yang sudah login tidak bisa buka halaman ini lagi
+Route::middleware('guest')->group(function () {
+    Route::get('/auth', [AuthController::class, 'index'])->name('login');
+    Route::post('/auth/login', [AuthController::class, 'login'])->name('login.post');
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+});
 
-Route::group(['middleware' => ['checklogin']], function () {
-     Route::get('/pages/dashboard',[GuestController::class, 'index'])->name('pages.user.index');
- });
-
- Route::group(['middleware' => ['checkrole:admin, warga']], function () {
-     Route::get('user',[UserController::class]);
- });
-//  Route::group(['middleware' => ['checkrole:admin, warga']], function () {
-//     Route::resource('warga', WargaController::class);
-//     Route::resource('perangkat', PerangkatDesaController::class);
-//     Route::resource('lembaga', LembagaDesaController::class);
-//     Route::resource('jabatan-lembaga', JabatanLembagaController::class);
-//  });
+// Logout
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
 
 
+// --- HALAMAN KHUSUS YANG SUDAH LOGIN ---
+// Semua route di dalam sini WAJIB Login dulu
+Route::group(['middleware' => ['checkislogin']], function () {
 
- Route::apiResource('media', MediaController::class);
+    // 1. DASHBOARD UTAMA
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-// Route tambahan
-Route::post('/media/sort-order', [MediaController::class, 'updateSortOrder']);
-Route::get('/media/reference/{table}/{id}', [MediaController::class, 'getByReference']);
+    // 2. ROUTE KHUSUS ADMIN
+    Route::group(['middleware' => ['checkrole:Admin']], function () {
+        Route::resource('lembaga', LembagaDesaController::class);
+        Route::resource('jabatan-lembaga', JabatanLembagaController::class);
+    });
+
+    // 3. ROUTE UNTUK WARGA (Admin juga bisa akses via middleware logic biasanya)
+    Route::group(['middleware' => ['checkrole:Warga']], function () {
+        Route::resource('warga', WargaController::class);
+        Route::resource('perangkat', PerangkatDesaController::class);
+        Route::apiResource('media', MediaController::class);
+        Route::post('/media/sort-order', [MediaController::class, 'updateSortOrder']);
+        Route::get('/media/reference/{table}/{id}', [MediaController::class, 'getByReference']);
+    });
+
+    // 4. ROUTE UNTUK USER BIASA
+    Route::group(['middleware' => ['checkrole:User']], function () {
+        Route::resource('users', UserController::class);
+    });
+
+});

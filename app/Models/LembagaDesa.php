@@ -50,5 +50,12 @@ class LembagaDesa extends Model
         }
         return asset('storage/logos/default-logo.png'); // Logo default jika tidak ada
     }
+
+    public function media()
+{
+    return $this->hasMany(Media::class, 'ref_id', 'lembaga_id')
+                ->where('ref_table', 'lembaga_desa');
+}
+
 }
 

@@ -74,21 +74,7 @@
                                     </div>
                                 @endif
 
-                                <div class="mb-3">
-                                    <label for="role" class="form-label">Role</label>
-                                    <select id="role" name="role" class="form-select" required>
-                                        <option value="">-- Pilih Role --</option>
-                                        <option value="Admin" {{ old('role') == 'Admin' ? 'selected' : '' }}>Admin
-                                        </option>
-                                        <option value="Warga" {{ old('role') == 'Warga' ? 'selected' : '' }}>Warga
-                                        </option>
-                                        <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>User
-                                        </option>
-                                    </select>
-                                    @error('role')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                                
 
                                 <!-- Upload Logo Baru (Multiple) -->
                                 <div class="mb-3">

@@ -120,9 +120,31 @@ class GuestController extends Controller
         return view('/pages/dashboard', $data);
     }
 
+    // Method baru untuk halaman Tentang
+    public function tentang()
+    {
+        // Data statistik yang dibutuhkan oleh view tentang.blade.php
+        $stats = [
+            'total_perangkat' => 15,
+            'total_lembaga' => 8,
+            'total_rt' => 10,
+            'total_rw' => 4,
+            // Menambahkan data dummy tambahan yang dibutuhkan oleh view tentang.blade.php
+            'total_kk' => 1250,
+            'total_warga' => 4500,
+        ];
+
+        $data = [
+            'title' => 'Tentang Kami - Tata Kelola Desa',
+            'stats' => $stats,
+        ];
+
+        return view('pages/tentang', $data);
+    }
 
 
     /**
+
      * Show the form for creating a new resource.
      */
     public function create()

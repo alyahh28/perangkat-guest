@@ -100,7 +100,8 @@ class MediaController extends Controller
 
         // Jika ada file baru diupload
         if ($request->hasFile('file_upload')) {
-            // Hapus file lama
+            foreach ($request->file('file_upload') as $file){{
+                // Hapus file lama
             Storage::delete('public/uploads/' . $media->file_name);
 
             // Upload file baru
@@ -110,6 +111,8 @@ class MediaController extends Controller
 
             $data['file_name'] = $fileName;
             $data['mime_type'] = $file->getMimeType();
+            }}
+
         }
 
         // Update database
