@@ -1,13 +1,15 @@
 <div class="container-xxl position-relative p-0">
-    <nav class="navbar navbar-expand-sm navbar-light px-4 px-lg-5 py-3 py-lg-0">
-        <a href="" class="navbar-brand p-0">
-            <h1 class="m-0"><i class="fa fa-search me-2"></i>BINA <span class="fs-5"> DESA</span></h1>
+    <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
+        <a href="{{ url('/') }}" class="navbar-brand p-0">
+            {{-- PERBAIKAN: Logo diperbesar max-height menjadi 100px --}}
+            <img src="{{ asset('assets-guest/img/logo2.png') }}" alt="Logo" style="max-height: 60px; width: auto;">
         </a>
+
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
             <span class="fa fa-bars"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarCollapse">
-            <!-- Menu Navigasi Utama -->
             <div class="navbar-nav mx-auto py-0 align-items-center">
                 <a href="{{ url('/dashboard') }}"
                     class="nav-item nav-link {{ request()->is('dashboard') ? 'active' : '' }}">
@@ -24,7 +26,6 @@
                     <i class="fas fa-users me-2"></i>Perangkat
                 </a>
 
-                <!-- Dropdown Menu Layanan -->
                 <div class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="layananDropdown" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
@@ -37,7 +38,6 @@
                                 <i class="fas fa-users me-2"></i>Data Warga
                             </a>
                         </li>
-
                         <li>
                             <a href="{{ route('users.index') }}"
                                 class="dropdown-item {{ request()->is('user.*') ? 'active' : '' }}">
@@ -47,7 +47,7 @@
                         <li>
                             <a href="{{ route('lembaga.index') }}"
                                 class="dropdown-item {{ request()->is('lembaga*') ? 'active' : '' }}">
-                                <i class="fas fa-user-cog me-2"></i>Data Lembaga Desa
+                                <i class="fas fa-building me-2"></i>Data Lembaga Desa
                             </a>
                         </li>
                         <li>
@@ -64,22 +64,17 @@
                 </a>
             </div>
 
-            <!-- Ikon User, Notifikasi, dan Logout di Kanan -->
-            <div class="navbar-nav ms-auto py-0 align-items-center" style="margin-right: 100px">
+            <div class="navbar-nav ms-auto py-0 align-items-center" style="margin-right: 0;">
                 <div class="user-actions d-flex align-items-center gap-3">
 
-                    
                     @if(Auth::check())
-                        <!-- Tampilkan menu untuk user yang sudah login -->
-
-                        <!-- Ikon Notifikasi -->
                         <div class="nav-item dropdown">
                             <div class="user-icon position-relative" id="notificationDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-bell"></i>
                                 <span class="notification-badge">3</span>
                             </div>
-                            <ul class="dropdown-menu user-dropdown dropdown-menu-end"
+                            <ul class="dropdown-menu user-dropdown dropdown-menu-end shadow"
                                 aria-labelledby="notificationDropdown">
                                 <li>
                                     <h6 class="dropdown-header">Notifikasi Terbaru</h6>
@@ -113,26 +108,25 @@
                             </ul>
                         </div>
 
-                        <!-- Ikon Profil dengan Dropdown -->
                         <div class="nav-item dropdown">
                             <div class="user-icon dropdown-toggle align-items-center" id="profileDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-user me-2"></i>
-                                <span class="user-name">
+                                <span class="user-name d-none d-lg-inline">
                                     {{ Auth::user()->name ?? session('user_name') }}
                                 </span>
                             </div>
-                            <ul class="dropdown-menu user-dropdown dropdown-menu-end" aria-labelledby="profileDropdown">
+                            <ul class="dropdown-menu user-dropdown dropdown-menu-end shadow" aria-labelledby="profileDropdown">
                                 <li>
                                     <a class="dropdown-item" href="{{ route('profile') }}">
-    <i class="fas fa-user-circle me-2"></i>Profil Saya
-</a>
+                                        <i class="fas fa-user-circle me-2"></i>Profil Saya
+                                    </a>
                                 </li>
                                 <li>
                                     <div class="dropdown-item">
                                         <small class="text-muted">
                                             <i class="fas fa-clock me-1"></i>
-                                            Login terakhir: {{ session('last_login') ? \Carbon\Carbon::parse(session('last_login'))->format('d M Y H:i') : 'Sekarang' }}
+                                            Login: {{ session('last_login') ? \Carbon\Carbon::parse(session('last_login'))->format('d M H:i') : 'Baru saja' }}
                                         </small>
                                     </div>
                                 </li>
@@ -140,7 +134,7 @@
                                     <hr class="dropdown-divider">
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('logout') }}">
+                                    <a class="dropdown-item text-danger" href="{{ route('logout') }}">
                                         <i class="fas fa-sign-out-alt me-2"></i>Keluar
                                     </a>
                                 </li>
@@ -148,10 +142,9 @@
                         </div>
 
                     @else
-                        <!-- Tampilkan tombol login jika user belum login -->
                         <div class="nav-item">
-                            <a href="{{ route('login') }}" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-sign-in-alt me-1"></i>Login
+                            <a href="{{ route('login') }}" class="btn btn-outline-light rounded-pill px-4">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login
                             </a>
                         </div>
                     @endif
@@ -180,9 +173,8 @@
     </div>
 
     {{-- BUTTON WA --}}
-    <a href="https://wa.me/6281234567890?text=Halo%20Admin%2C%20saya%20ingin%20bertanya." class="whatsapp-float"
+    <a href="https://wa.me/6281234567890?text=Halo%20Admin%2C%20saya%20ingin%20bertanya." class="whatsapp-float shadow"
         target="_blank" rel="noopener noreferrer">
         <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp" />
     </a>
 </div>
-<!-- Navbar & Hero End -->
