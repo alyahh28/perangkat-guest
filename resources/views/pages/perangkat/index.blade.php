@@ -15,6 +15,7 @@
                 <span class="sr-only">Loading...</span>
             </div>
         </div>
+
         {{-- START HEADER --}}
         @include('layouts.guest.header')
         {{-- END HEADER --}}
@@ -80,21 +81,21 @@
                         <div class="perangkat-card">
                             <div class="card-header">
                                 <div class="header-content">
-                                    @if ($perangkat->foto)
-                                        <img src="{{ asset('storage/' . $perangkat->foto) }}" class="foto-perangkat"
-                                            alt="{{ $perangkat->warga->nama }}"
-                                            style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
-                                    @else
-                                        <div class="avatar"
-                                            style="width: 60px; height: 60px; border-radius: 50%; background: #007bff; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px;">
-                                            {{ strtoupper(substr($perangkat->warga->nama, 0, 1)) }}
-                                        </div>
-                                    @endif
+                                    @php
+                                        $imgSrc = $perangkat->foto ? asset('storage/' . $perangkat->foto) : asset('assets-guest/img/no-image.jpg');
+                                    @endphp
+
+                                    <img src="{{ $imgSrc }}"
+                                         class="foto-perangkat shadow-sm"
+                                         alt="{{ $perangkat->warga->nama }}"
+                                         onerror="this.onerror=null;this.src='{{ asset('assets-guest/img/no-image.jpg') }}';"
+                                         style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid #fff;">
+
                                     <div style="margin-left: 15px;">
                                         <div class="nama" style="font-weight: bold; font-size: 18px;">
-                                            <i class="fa fa-user-tie me-2"></i>{{ $perangkat->warga->nama }}
+                                            {{ $perangkat->warga->nama }}
                                         </div>
-                                        <div class="jabatan" style="color: #6c757d; font-size: 14px;">
+                                        <div class="jabatan text-primary" style="font-size: 14px; font-weight: 600;">
                                             {{ $perangkat->jabatan }}
                                         </div>
                                     </div>
@@ -154,7 +155,6 @@
 
                             <div class="card-footer" style="padding: 15px; background: #f8f9fa;">
                                 <div class="d-flex justify-content-between gap-2">
-                                    {{-- PERBAIKAN: Menggunakan tag <a> agar langsung masuk ke halaman show --}}
                                     <a href="{{ route('perangkat.show', $perangkat->perangkat_id) }}" class="btn btn-primary flex-fill">
                                         <i class="fa fa-eye me-2"></i>Detail
                                     </a>
@@ -163,6 +163,7 @@
                                         class="btn btn-warning flex-fill" style="color: white;">
                                         <i class="fa fa-edit me-2"></i>Edit
                                     </a>
+
                                     <form action="{{ route('perangkat.destroy', $perangkat->perangkat_id) }}"
                                         method="POST" style="display: inline; flex: 1;">
                                         @csrf
@@ -194,11 +195,11 @@
                 </div>
             </div>
         </div>
+
         @include('layouts.guest.footer')
-        </div>
+    </div>
 
     {{-- START JS --}}
     @include('layouts.guest.js')
 </body>
-
 </html>

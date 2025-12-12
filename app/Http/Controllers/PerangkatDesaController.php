@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\PerangkatDesa;
 use App\Models\Warga;
+use App\Models\Media;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class PerangkatDesaController extends Controller
 {
@@ -14,10 +16,12 @@ class PerangkatDesaController extends Controller
         $query = PerangkatDesa::with('warga');
 
         // Filter Status
-        if ($request->has('status') && $request->status != '') {
+        if ($request->filled('status')) {
             if ($request->status == 'Aktif') {
-                $query->whereNull('periode_selesai')
+                $query->where(function($q) {
+                    $q->whereNull('periode_selesai')
                       ->orWhere('periode_selesai', '>', now());
+                });
             } elseif ($request->status == 'Tidak Aktif') {
                 $query->whereNotNull('periode_selesai')
                       ->where('periode_selesai', '<=', now());
@@ -25,13 +29,14 @@ class PerangkatDesaController extends Controller
         }
 
         // Search
-        if ($request->has('search') && $request->search != '') {
-            $query->where(function($q) use ($request) {
-                $q->where('jabatan', 'LIKE', '%' . $request->search . '%')
-                  ->orWhere('nip', 'LIKE', '%' . $request->search . '%')
-                  ->orWhere('kontak', 'LIKE', '%' . $request->search . '%')
-                  ->orWhereHas('warga', function($wargaQuery) use ($request) {
-                      $wargaQuery->where('nama', 'LIKE', '%' . $request->search . '%');
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('jabatan', 'LIKE', '%' . $search . '%')
+                  ->orWhere('nip', 'LIKE', '%' . $search . '%')
+                  ->orWhere('kontak', 'LIKE', '%' . $search . '%')
+                  ->orWhereHas('warga', function($wargaQuery) use ($search) {
+                      $wargaQuery->where('nama', 'LIKE', '%' . $search . '%');
                   });
             });
         }
@@ -59,30 +64,35 @@ class PerangkatDesaController extends Controller
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $data = $request->all();
+        DB::transaction(function () use ($request) {
+            $data = $request->except(['foto']);
 
-        if ($request->hasFile('foto')) {
-            $fotoPath = $request->file('foto')->store('perangkat_desa', 'public');
-            $data['foto'] = $fotoPath;
-        }
+            if ($request->hasFile('foto')) {
+                $fotoPath = $request->file('foto')->store('perangkat_desa', 'public');
+                $data['foto'] = $fotoPath;
+            }
 
-        PerangkatDesa::create($data);
+            PerangkatDesa::create($data);
+        });
 
         return redirect()->route('perangkat.index')->with('success', 'Data berhasil ditambahkan!');
     }
 
-    // --- FUNGSI SHOW (DETAIL) ---
     public function show($id)
     {
-        // Sekarang ini tidak akan error karena Model sudah diperbaiki
-        $perangkat = PerangkatDesa::with(['warga', 'media'])->findOrFail($id);
+        $perangkat = PerangkatDesa::with(['warga', 'media' => function($q) {
+            $q->orderBy('sort_order', 'asc');
+        }])->findOrFail($id);
 
         return view('pages.perangkat.show', compact('perangkat'));
     }
 
     public function edit(string $id)
     {
-        $data['dataPerangkat'] = PerangkatDesa::findOrFail($id);
+        $data['dataPerangkat'] = PerangkatDesa::with(['media' => function($q) {
+            $q->orderBy('sort_order', 'asc');
+        }])->findOrFail($id);
+
         $data['dataWarga'] = Warga::all();
         return view('pages.perangkat.edit', $data);
     }
@@ -97,33 +107,86 @@ class PerangkatDesaController extends Controller
             'periode_mulai' => 'required|date',
             'periode_selesai' => 'nullable|date|after:periode_mulai',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'fotos.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $perangkat = PerangkatDesa::findOrFail($id);
-        $data = $request->all();
+        DB::transaction(function () use ($request, $id) {
+            $perangkat = PerangkatDesa::findOrFail($id);
 
-        if ($request->hasFile('foto')) {
-            if ($perangkat->foto) {
-                Storage::disk('public')->delete($perangkat->foto);
+            $data = $request->except(['foto', 'fotos', 'captions', 'sort_orders', 'remove_media', 'captions_new', 'sort_orders_new']);
+
+            // 1. Update Foto Utama
+            if ($request->hasFile('foto')) {
+                if ($perangkat->foto && Storage::disk('public')->exists($perangkat->foto)) {
+                    Storage::disk('public')->delete($perangkat->foto);
+                }
+                $fotoPath = $request->file('foto')->store('perangkat_desa', 'public');
+                $data['foto'] = $fotoPath;
             }
-            $fotoPath = $request->file('foto')->store('perangkat_desa', 'public');
-            $data['foto'] = $fotoPath;
-        }
 
-        $perangkat->update($data);
+            $perangkat->update($data);
+
+            // 2. Hapus Media
+            if ($request->has('remove_media')) {
+                $mediaToDelete = Media::whereIn('media_id', $request->remove_media)->get();
+                foreach ($mediaToDelete as $media) {
+                    if (Storage::disk('public')->exists('uploads/' . $media->file_name)) {
+                        Storage::disk('public')->delete('uploads/' . $media->file_name);
+                    }
+                    $media->delete();
+                }
+            }
+
+            // 3. Update Caption Media
+            if ($request->has('captions')) {
+                foreach ($request->captions as $mediaId => $caption) {
+                    Media::where('media_id', $mediaId)->update([
+                        'caption' => $caption,
+                        'sort_order' => $request->sort_orders[$mediaId] ?? 0
+                    ]);
+                }
+            }
+
+            // 4. Upload Media Baru
+            if ($request->hasFile('fotos')) {
+                foreach ($request->file('fotos') as $key => $file) {
+                    $filename = $file->store('uploads', 'public');
+                    $filenameOnly = basename($filename);
+
+                    Media::create([
+                        'ref_table' => 'perangkat_desa',
+                        'ref_id' => $perangkat->perangkat_id,
+                        'file_name' => $filenameOnly,
+                        'caption' => $request->captions_new[$key] ?? null,
+                        'sort_order' => $request->sort_orders_new[$key] ?? 0,
+                    ]);
+                }
+            }
+        });
 
         return redirect()->route('perangkat.index')->with('success', 'Data berhasil diupdate!');
     }
 
     public function destroy(string $id)
     {
-        $perangkat = PerangkatDesa::findOrFail($id);
+        $perangkat = PerangkatDesa::with('media')->findOrFail($id);
 
-        if ($perangkat->foto) {
-            Storage::disk('public')->delete($perangkat->foto);
-        }
+        DB::transaction(function () use ($perangkat) {
+            if ($perangkat->foto && Storage::disk('public')->exists($perangkat->foto)) {
+                Storage::disk('public')->delete($perangkat->foto);
+            }
 
-        $perangkat->delete();
+            if ($perangkat->media) {
+                foreach ($perangkat->media as $media) {
+                    if (Storage::disk('public')->exists('uploads/' . $media->file_name)) {
+                        Storage::disk('public')->delete('uploads/' . $media->file_name);
+                    }
+                    $media->delete();
+                }
+            }
+
+            $perangkat->delete();
+        });
 
         return redirect()->route('perangkat.index')->with('success', 'Data berhasil dihapus!');
     }

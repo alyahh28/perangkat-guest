@@ -68,6 +68,7 @@
             <div class="navbar-nav ms-auto py-0 align-items-center" style="margin-right: 100px">
                 <div class="user-actions d-flex align-items-center gap-3">
 
+                    
                     @if(Auth::check())
                         <!-- Tampilkan menu untuk user yang sudah login -->
 

@@ -1,30 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    {{-- START CSS --}}
     @include('layouts.guest.css')
-    {{-- END CSS --}}
 </head>
-
 <body>
     <div class="container-xxl bg-white p-0">
-        <!-- Spinner Start -->
-        <div id="spinner"
-            class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-        <!-- Spinner End -->
-
-        {{-- START HEADER --}}
-        <!-- Navbar & Hero Start -->
         @include('layouts.guest.header')
-        <!-- Navbar & Hero End -->
-        {{-- END HEADER --}}
-
-        <!-- Content Start -->
         <div class="container-xxl py-5">
             <div class="container px-lg-5">
                 <div class="row justify-content-center">
@@ -41,191 +22,104 @@
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label for="warga_id" class="form-label">Nama Warga *</label>
-                                            <select class="form-select @error('warga_id') is-invalid @enderror"
-                                                id="warga_id" name="warga_id" required>
+                                            <select class="form-select" id="warga_id" name="warga_id" required>
                                                 <option value="">Pilih Warga</option>
                                                 @foreach ($dataWarga as $warga)
-                                                    <option value="{{ $warga->warga_id }}"
-                                                        {{ old('warga_id', $dataPerangkat->warga_id) == $warga->warga_id ? 'selected' : '' }}>
+                                                    <option value="{{ $warga->warga_id }}" {{ old('warga_id', $dataPerangkat->warga_id) == $warga->warga_id ? 'selected' : '' }}>
                                                         {{ $warga->nama }} - {{ $warga->no_ktp }}
                                                     </option>
                                                 @endforeach
                                             </select>
-                                            @error('warga_id')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
                                         </div>
 
                                         <div class="col-md-6 mb-3">
                                             <label for="jabatan" class="form-label">Jabatan *</label>
-                                            <input type="text"
-                                                class="form-control @error('jabatan') is-invalid @enderror"
-                                                id="jabatan" name="jabatan"
-                                                value="{{ old('jabatan', $dataPerangkat->jabatan) }}" required>
-                                            @error('jabatan')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                            <input type="text" class="form-control" id="jabatan" name="jabatan" value="{{ old('jabatan', $dataPerangkat->jabatan) }}" required>
                                         </div>
 
                                         <div class="col-md-6 mb-3">
                                             <label for="nip" class="form-label">NIP</label>
-                                            <input type="text"
-                                                class="form-control @error('nip') is-invalid @enderror" id="nip"
-                                                name="nip" value="{{ old('nip', $dataPerangkat->nip) }}">
-                                            @error('nip')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                            <input type="text" class="form-control" id="nip" name="nip" value="{{ old('nip', $dataPerangkat->nip) }}">
                                         </div>
 
                                         <div class="col-md-6 mb-3">
                                             <label for="kontak" class="form-label">Kontak *</label>
-                                            <input type="text"
-                                                class="form-control @error('kontak') is-invalid @enderror"
-                                                id="kontak" name="kontak"
-                                                value="{{ old('kontak', $dataPerangkat->kontak) }}" required>
-                                            @error('kontak')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                            <input type="text" class="form-control" id="kontak" name="kontak" value="{{ old('kontak', $dataPerangkat->kontak) }}" required>
                                         </div>
 
                                         <div class="col-md-6 mb-3">
                                             <label for="periode_mulai" class="form-label">Periode Mulai *</label>
-                                            <input type="date"
-                                                class="form-control @error('periode_mulai') is-invalid @enderror"
-                                                id="periode_mulai" name="periode_mulai"
-                                                value="{{ old('periode_mulai', $dataPerangkat->periode_mulai) }}"
-                                                required>
-                                            @error('periode_mulai')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                            <input type="date" class="form-control" id="periode_mulai" name="periode_mulai" value="{{ old('periode_mulai', $dataPerangkat->periode_mulai) }}" required>
                                         </div>
 
                                         <div class="col-md-6 mb-3">
                                             <label for="periode_selesai" class="form-label">Periode Selesai</label>
-                                            <input type="date"
-                                                class="form-control @error('periode_selesai') is-invalid @enderror"
-                                                id="periode_selesai" name="periode_selesai"
-                                                value="{{ old('periode_selesai', $dataPerangkat->periode_selesai) }}">
-                                            @error('periode_selesai')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                            <input type="date" class="form-control" id="periode_selesai" name="periode_selesai" value="{{ old('periode_selesai', $dataPerangkat->periode_selesai) }}">
                                         </div>
 
                                         <div class="col-12 mb-3">
-                                            <label for="foto" class="form-label">Foto</label>
-                                            @if ($dataPerangkat->foto)
-                                                <div class="mb-2">
-                                                    <img src="{{ asset('storage/' . $dataPerangkat->foto) }}"
-                                                        alt="Foto" class="rounded" width="100">
-                                                    <br>
-                                                    <small class="text-muted">Foto saat ini</small>
-                                                </div>
-                                            @endif
-                                            <input type="file"
-                                                class="form-control @error('foto') is-invalid @enderror" id="foto"
-                                                name="foto" accept="image/*">
-                                            @error('foto')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                            <small class="text-muted">Format: JPEG, PNG, JPG, GIF (Max: 2MB)</small>
+                                            <label for="foto" class="form-label">Foto Profil Utama</label>
+                                            <div class="mb-2">
+                                                {{-- LOGIKA DISPLAY FOTO SAAT EDIT --}}
+                                                @php
+                                                    $editImgSrc = $dataPerangkat->foto ? asset('storage/' . $dataPerangkat->foto) : asset('assets-guest/img/no-image.jpg');
+                                                @endphp
+                                                <img src="{{ $editImgSrc }}"
+                                                     alt="Foto"
+                                                     class="rounded shadow-sm"
+                                                     width="100"
+                                                     onerror="this.onerror=null;this.src='{{ asset('assets-guest/img/no-image.jpg') }}';">
+                                                <br><small class="text-muted">Foto saat ini</small>
+                                            </div>
+                                            <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
                                         </div>
                                     </div>
 
-                                    <!-- edit.blade.php - tambahkan di bagian form setelah foto single -->
-<div class="col-12 mb-3">
-    <label class="form-label">Foto Tambahan (Multiple)</label>
+                                    {{-- BAGIAN MEDIA / GALERI --}}
+                                    <hr>
+                                    <div class="col-12 mb-3">
+                                        <h5 class="mb-3">Galeri / Dokumentasi</h5>
+                                        @if($dataPerangkat->media->count() > 0)
+                                            <div class="mb-4 p-3 bg-light rounded">
+                                                <p class="text-muted fw-bold mb-2">Foto yang sudah diupload:</p>
+                                                <div class="row">
+                                                    @foreach($dataPerangkat->media as $media)
+                                                        <div class="col-md-3 mb-3">
+                                                            <div class="card h-100 shadow-sm">
+                                                                <img src="{{ asset('storage/uploads/' . $media->file_name) }}" class="card-img-top" style="height: 100px; object-fit: cover;">
+                                                                <div class="card-body p-2">
+                                                                    <div class="form-check mb-2">
+                                                                        <input type="checkbox" name="remove_media[]" value="{{ $media->media_id }}" class="form-check-input text-danger">
+                                                                        <label class="form-check-label text-danger small">Hapus</label>
+                                                                    </div>
+                                                                    <input type="text" name="captions[{{ $media->media_id }}]" value="{{ $media->caption }}" placeholder="Caption" class="form-control form-control-sm mb-1">
+                                                                    <input type="number" name="sort_orders[{{ $media->media_id }}]" value="{{ $media->sort_order }}" placeholder="Urutan" class="form-control form-control-sm">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @endif
 
-    <!-- Foto Existing dari Media Table -->
-    @if($dataPerangkat->media->count() > 0)
-        <div class="mb-3">
-            <p class="text-muted">Foto yang sudah diupload:</p>
-            <div class="row">
-                @foreach($dataPerangkat->media as $media)
-                    <div class="col-md-3 mb-2">
-                        <div class="position-relative">
-                            <img src="{{ asset('storage/uploads/' . $media->file_name) }}"
-                                 alt="Foto"
-                                 class="img-thumbnail"
-                                 style="width: 100px; height: 100px; object-fit: cover;">
-                            <div class="form-check position-absolute" style="top: 5px; left: 5px;">
-                                <input type="checkbox"
-                                       name="remove_media[]"
-                                       value="{{ $media->media_id }}"
-                                       class="form-check-input">
-                            </div>
-                            <input type="text"
-                                   name="captions[{{ $media->media_id }}]"
-                                   value="{{ $media->caption }}"
-                                   placeholder="Caption"
-                                   class="form-control form-control-sm mt-1">
-                            <input type="number"
-                                   name="sort_orders[{{ $media->media_id }}]"
-                                   value="{{ $media->sort_order }}"
-                                   placeholder="Urutan"
-                                   class="form-control form-control-sm mt-1">
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    @endif
-
-    <!-- Upload Foto Baru -->
-    <div id="new-fotos-container">
-        <div class="foto-upload-item mb-2">
-            <input type="file"
-                   name="fotos[]"
-                   class="form-control"
-                   accept="image/*">
-            <div class="row mt-1">
-                <div class="col-md-6">
-                    <input type="text"
-                           name="captions_new[]"
-                           class="form-control form-control-sm"
-                           placeholder="Caption">
-                </div>
-                <div class="col-md-6">
-                    <input type="number"
-                           name="sort_orders_new[]"
-                           class="form-control form-control-sm"
-                           placeholder="Urutan">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <button type="button" class="btn btn-sm btn-secondary mt-2" id="add-foto">
-        <i class="fa fa-plus"></i> Tambah Foto Lain
-    </button>
-</div>
-
-<script>
-    document.getElementById('add-foto').addEventListener('click', function() {
-        const container = document.getElementById('new-fotos-container');
-        const newItem = document.createElement('div');
-        newItem.className = 'foto-upload-item mb-2';
-        newItem.innerHTML = `
-            <input type="file" name="fotos[]" class="form-control" accept="image/*">
-            <div class="row mt-1">
-                <div class="col-md-6">
-                    <input type="text" name="captions_new[]" class="form-control form-control-sm" placeholder="Caption">
-                </div>
-                <div class="col-md-6">
-                    <input type="number" name="sort_orders_new[]" class="form-control form-control-sm" placeholder="Urutan">
-                </div>
-            </div>
-        `;
-        container.appendChild(newItem);
-    });
-</script>
+                                        <label class="form-label fw-bold">Tambah Foto Baru</label>
+                                        <div id="new-fotos-container">
+                                            <div class="foto-upload-item mb-2 border p-2 rounded">
+                                                <input type="file" name="fotos[]" class="form-control mb-2" accept="image/*">
+                                                <div class="row g-2">
+                                                    <div class="col-md-6"><input type="text" name="captions_new[]" class="form-control form-control-sm" placeholder="Caption"></div>
+                                                    <div class="col-md-6"><input type="number" name="sort_orders_new[]" class="form-control form-control-sm" placeholder="Urutan"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="add-foto">
+                                            <i class="fa fa-plus"></i> Tambah Foto Lain
+                                        </button>
+                                    </div>
 
                                     <div class="d-flex justify-content-between mt-4">
-                                        <a href="{{ route('perangkat.index') }}" class="btn btn-secondary">
-                                            <i class="fa fa-arrow-left me-2"></i>Kembali
-                                        </a>
-                                        <button type="submit" class="btn btn-warning">
-                                            <i class="fa fa-save me-2"></i>Update
-                                        </button>
+                                        <a href="{{ route('perangkat.index') }}" class="btn btn-secondary"><i class="fa fa-arrow-left me-2"></i>Kembali</a>
+                                        <button type="submit" class="btn btn-warning text-white"><i class="fa fa-save me-2"></i>Update Data</button>
                                     </div>
                                 </form>
                             </div>
@@ -234,17 +128,23 @@
                 </div>
             </div>
         </div>
-        <!-- Content End -->
-
-        <!-- Footer Start -->
         @include('layouts.guest.footer')
-        <!-- Footer End -->
-
-         </div>
-
-    {{-- START JS --}}
+    </div>
     @include('layouts.guest.js')
-    {{-- END JS --}}
+    <script>
+        document.getElementById('add-foto').addEventListener('click', function() {
+            const container = document.getElementById('new-fotos-container');
+            const newItem = document.createElement('div');
+            newItem.className = 'foto-upload-item mb-2 border p-2 rounded';
+            newItem.innerHTML = `
+                <input type="file" name="fotos[]" class="form-control mb-2" accept="image/*">
+                <div class="row g-2">
+                    <div class="col-md-6"><input type="text" name="captions_new[]" class="form-control form-control-sm" placeholder="Caption"></div>
+                    <div class="col-md-6"><input type="number" name="sort_orders_new[]" class="form-control form-control-sm" placeholder="Urutan"></div>
+                </div>
+            `;
+            container.appendChild(newItem);
+        });
+    </script>
 </body>
-
 </html>
