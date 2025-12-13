@@ -1,5 +1,5 @@
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></>
 <script src="{{ asset('assets-guest/lib/wow/wow.min.js') }}"></script>
 <script src="{{ asset('assets-guest/lib/easing/easing.min.js') }}"></script>
 <script src="{{ asset('assets-guest/lib/waypoints/waypoints.min.js') }}"></script>
@@ -12,6 +12,21 @@
 <script src="{{ asset('assets-guest/resources/js/app.js') }}"></script>
 
 @stack('scripts')
+
+<script>
+    // Logic Spinner dari Template Baru biasanya ada di main.js,
+    // tapi kita pastikan di sini agar hilang setelah load
+    $(window).on('load', function () {
+        if ($('#spinner').length > 0) {
+            $('#spinner').removeClass('show');
+        }
+    });
+
+    // Pindahkan Logic Pencarian & Confirm Delete ke sini jika app.js belum diload dengan benar
+    document.addEventListener('DOMContentLoaded', function() {
+        // ... (Script pencarian Anda tetap bisa digunakan di sini)
+    });
+</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

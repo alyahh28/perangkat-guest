@@ -18,6 +18,12 @@ return new class extends Migration
             $table->date('periode_selesai')->nullable();
             $table->string('foto')->nullable();
             $table->timestamps();
+
+             // Foreign key constraint
+            $table->foreign('warga_id')
+                  ->references('warga_id')
+                  ->on('warga')
+                  ->onDelete('cascade');
         });
     }
 
