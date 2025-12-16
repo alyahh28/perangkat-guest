@@ -1429,3 +1429,149 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
     </style>
+
+<style>
+    /* Card Styles */
+    .modern-card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        overflow: hidden;
+        height: 100%;
+        border: 1px solid #e9ecef;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modern-card:hover {
+        box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        transform: translateY(-5px);
+        border-color: #dee2e6;
+    }
+
+    /* Header Section inside Card */
+    .card-header-section {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        background: linear-gradient(to right, #f8f9fa, #ffffff);
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .card-icon {
+        flex-shrink: 0;
+        margin-right: 15px;
+    }
+
+    /* Logo Styling */
+    .logo-img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover; /* Mencegah gambar gepeng */
+        border-radius: 12px;
+        border: 1px solid #dee2e6;
+        background: #fff;
+    }
+
+    .default-logo-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+    }
+
+    /* Title & Text */
+    .card-title-section {
+        flex: 1;
+        overflow: hidden;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .card-subtitle {
+        font-size: 0.8rem;
+        color: #718096;
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Body Section */
+    .card-body-section {
+        padding: 20px;
+        flex: 1; /* Agar footer selalu di bawah */
+    }
+
+    .info-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+        border-bottom: 1px dashed #f0f0f0;
+        padding-bottom: 8px;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #4a5568;
+    }
+
+    .info-value {
+        color: #718096;
+        text-align: right;
+        max-width: 60%;
+    }
+
+    /* Footer & Buttons */
+    .card-footer-section {
+        padding: 15px 20px;
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .action-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr; /* 3 Tombol sejajar */
+        gap: 8px;
+    }
+
+    .btn-action {
+        width: 100%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+
+    /* Empty State */
+    .empty-state {
+        background: #fff;
+        border-radius: 16px;
+        padding: 60px 20px;
+        border: 2px dashed #cbd5e0;
+    }
+</style>

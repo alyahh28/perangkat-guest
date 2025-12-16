@@ -73,36 +73,69 @@ class LembagaDesaController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $request->validate([
-            'nama_lembaga' => 'required|string|max:100',
-            'deskripsi' => 'nullable|string',
-            'kontak' => 'nullable|string|max:50',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
-        ]);
+{
+    $lembaga = LembagaDesa::findOrFail($id);
 
-        $lembaga = LembagaDesa::findOrFail($id);
-        $data = $request->except('logo');
+    // 1. Update Data Utama
+    $lembaga->update([
+        'nama_lembaga' => $request->nama_lembaga,
+        'singkatan'    => $request->singkatan,
+        'alamat'       => $request->alamat,
+        'deskripsi'    => $request->deskripsi,
+        // field lain...
+    ]);
 
-        // Upload logo baru jika ada
-        if ($request->hasFile('logo')) {
-            // Hapus logo lama jika ada
-            if ($lembaga->logo) {
-                Storage::delete('public/logos/' . $lembaga->logo);
-            }
-
-            $logoFile = $request->file('logo');
-            $logoName = 'logo_' . Str::slug($request->nama_lembaga) . '_' . time() . '.' . $logoFile->getClientOriginalExtension();
-
-            $logoPath = $logoFile->storeAs('public/logos', $logoName);
-            $data['logo'] = $logoName;
+    // 2. Hapus Logo Single Lama (Jika dicentang)
+    if ($request->has('remove_logo')) {
+        if ($lembaga->logo) {
+            Storage::delete('public/logos/' . $lembaga->logo); // Hapus file fisik
+            $lembaga->update(['logo' => null]); // Set null di DB
         }
-
-        $lembaga->update($data);
-
-        return redirect()->route('lembaga.index')
-            ->with('success', 'Lembaga desa berhasil diperbarui.');
     }
+
+    // 3. Update Caption & Urutan Media Existing
+    if ($request->has('captions')) {
+        foreach ($request->captions as $mediaId => $caption) {
+            $media = Media::find($mediaId);
+            if ($media) {
+                $media->update([
+                    'caption' => $caption,
+                    'sort_order' => $request->sort_orders[$mediaId] ?? 0
+                ]);
+            }
+        }
+    }
+
+    // 4. Hapus Media (Multiple)
+    if ($request->has('remove_media')) {
+        foreach ($request->remove_media as $mediaId) {
+            $media = Media::find($mediaId);
+            if ($media) {
+                Storage::delete('public/uploads/' . $media->file_name); // Hapus file fisik
+                $media->delete(); // Hapus record DB
+            }
+        }
+    }
+
+    // 5. Upload Logo Baru (Multiple)
+    if ($request->hasFile('logos')) {
+        foreach ($request->file('logos') as $index => $file) {
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('public/uploads', $filename);
+
+            // Simpan ke tabel Media
+$lembaga->media()->create([
+    'ref_table'  => 'data', // <--- TAMBAHKAN BARIS INI (Wajib)
+    'file_name'  => $filename,
+    'caption'    => $request->captions_new[$index] ?? null,
+    'sort_order' => $request->sort_orders_new[$index] ?? 0,
+    'mime_type'  => 'image/jpeg', // Ganti 'file_type' jadi 'mime_type' sesuai Model Anda
+]);
+        }
+    }
+
+    return redirect()->route('lembaga.index')->with('success', 'Data berhasil diperbarui');
+}
 
     public function destroy($id)
     {
