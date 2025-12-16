@@ -8,63 +8,57 @@ use Faker\Factory as Faker;
 
 class PerangkatDesaSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
         $faker = Faker::create('id_ID');
 
-        // Ambil ID warga dari config
-        $warga_ids = config('warga_seeder.ids');
+        // AMBIL ID NYATA DULU:
+        // Ambil semua 'warga_id' yang benar-benar ada di tabel warga
+        $wargaIds = DB::table('warga')->pluck('warga_id')->toArray();
 
-        if (!$warga_ids || count($warga_ids) === 0) {
-            echo "❌ Jalankan WargaSeeder terlebih dahulu!\n";
+        // Pengecekan keamanan: Jika tabel warga kosong, hentikan proses biar tidak error aneh
+        if (empty($wargaIds)) {
+            $this->command->error('Error: Tabel warga masih kosong! Harap jalankan WargaSeeder terlebih dahulu.');
             return;
         }
 
-        $perangkat_batch = [];
-
-        $jabatan_perangkat = [
-            'Kepala Desa', 'Sekretaris Desa', 'Kasi Pemerintahan', 'Kasi Kesejahteraan',
-            'Kasi Pelayanan', 'Kaur Keuangan', 'Kaur Umum', 'Kaur Perencanaan',
-            'Kadus 1', 'Kadus 2', 'Kadus 3', 'Kadus 4', 'Kadus 5',
-            'Staff Administrasi', 'Staff Keuangan', 'Staff Pelayanan'
+        $jabatanList = [
+            'Kepala Desa',
+            'Sekretaris Desa',
+            'Kaur Keuangan',
+            'Kaur Perencanaan',
+            'Kaur Tata Usaha',
+            'Kasi Pemerintahan',
+            'Kasi Kesejahteraan',
+            'Kasi Pelayanan',
+            'Kepala Dusun'
         ];
 
-        // Pastikan tidak ada duplikasi warga_id
-        $available_warga_ids = $warga_ids;
-        shuffle($available_warga_ids);
+        $data = [];
 
         for ($i = 0; $i < 100; $i++) {
-            if (empty($available_warga_ids)) {
-                break; // Jika sudah habis warga yang available
-            }
+            $mediaId = ($i % 10) + 1;
 
-            $warga_id = array_pop($available_warga_ids);
+            $data[] = [
+                // PERBAIKAN DI SINI:
+                // Ambil satu ID secara acak dari daftar ID yang valid
+                'warga_id'        => $faker->randomElement($wargaIds),
 
-            $periode_mulai = $faker->dateTimeBetween('-5 years', '-1 year');
-            $periode_selesai = $faker->boolean(70) ? $faker->dateTimeBetween('+1 year', '+3 years') : null;
-
-            $perangkat_batch[] = [
-                'warga_id' => $warga_id,
-                'jabatan' => $jabatan_perangkat[array_rand($jabatan_perangkat)] . ($i > 15 ? ' ' . ($i - 15) : ''),
-                'nip' => $faker->unique()->numerify('19##############'),
-                'kontak' => $faker->unique()->e164PhoneNumber,
-                'periode_mulai' => $periode_mulai,
-                'periode_selesai' => $periode_selesai,
-                'foto' => null, // Bisa ditambahkan path foto dummy jika diperlukan
-                'created_at' => now(),
-                'updated_at' => now(),
+                'jabatan'         => $faker->randomElement($jabatanList),
+                'nip'             => $faker->unique()->numerify('19##########00#'),
+                'kontak'          => $faker->numerify('08##########'),
+                'media_id'        => $mediaId,
+                'periode_mulai'   => $faker->date('Y-m-d', '-5 years'),
+                'periode_selesai' => $faker->optional(0.3)->date('Y-m-d', '+5 years'),
+                'foto'            => 'dummy_foto_' . $i . '.jpg',
+                'created_at'      => now(),
+                'updated_at'      => now(),
             ];
-
-            // Insert setiap 20 data
-            if (($i + 1) % 20 === 0) {
-                DB::table('perangkat_desa')->insert($perangkat_batch);
-                $perangkat_batch = [];
-            }
         }
 
-        // Insert sisa data
-        if (!empty($perangkat_batch)) {
-            DB::table('perangkat_desa')->insert($perangkat_batch);
-        }
+        DB::table('perangkat_desa')->insert($data);
     }
 }

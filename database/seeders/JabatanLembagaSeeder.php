@@ -8,49 +8,43 @@ use Faker\Factory as Faker;
 
 class JabatanLembagaSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
-        $faker = Faker::create('id_ID');
+        $faker = Faker::create('id_ID'); // Menggunakan locale Indonesia
 
-        // Ambil ID lembaga dari config
-        $lembaga_ids = config('lembaga_desa_seeder.ids');
-
-        if (!$lembaga_ids || count($lembaga_ids) === 0) {
-            echo "❌ Jalankan LembagaDesaSeeder terlebih dahulu!\n";
-            return;
-        }
-
-        $jabatan_batch = [];
-
-        $jabatan_umum = [
-            'Ketua', 'Wakil Ketua', 'Sekretaris', 'Bendahara', 'Anggota',
-            'Koordinator', 'Staff', 'Manager', 'Supervisor', 'Direktur',
-            'Kepala Divisi', 'Wakil Direktur', 'Koordinator Lapangan', 'Administrator'
+        // Daftar jabatan manual agar terlihat lebih nyata untuk konteks Lembaga
+        $pilihanJabatan = [
+            'Ketua',
+            'Wakil Ketua',
+            'Sekretaris I',
+            'Sekretaris II',
+            'Bendahara',
+            'Anggota',
+            'Koordinator Bidang',
+            'Seksi Keamanan',
+            'Seksi Pembangunan',
+            'Penasehat'
         ];
 
-        $counter = 0;
-        while ($counter < 100) {
-            foreach ($lembaga_ids as $lembaga_id) {
-                $jabatan_per_lembaga = rand(2, 4); // 2-4 jabatan per lembaga
+        $data = [];
 
-                for ($j = 0; $j < $jabatan_per_lembaga; $j++) {
-                    if ($counter >= 100) break;
+        for ($i = 0; $i < 100; $i++) {
+            $data[] = [
+                // Asumsi: Pastikan kamu punya data di tabel lembaga dengan ID 1 sampai 10.
+                // Jika tabel lembaga masih kosong, angka ini bisa menyebabkan error Foreign Key.
+                'lembaga_id'   => $faker->numberBetween(1, 10),
 
-                    $jabatan_batch[] = [
-                        'lembaga_id' => $lembaga_id,
-                        'nama_jabatan' => $jabatan_umum[array_rand($jabatan_umum)] . ' ' . $faker->unique()->word,
-                        'level' => $faker->numberBetween(1, 5),
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ];
-                    $counter++;
-                }
-
-                if ($counter >= 100) break;
-            }
+                'nama_jabatan' => $faker->randomElement($pilihanJabatan),
+                'level'        => $faker->numberBetween(1, 5), // Level 1 (Tinggi) - 5 (Rendah)
+                'created_at'   => now(),
+                'updated_at'   => now(),
+            ];
         }
 
-        // Insert data
-        DB::table('jabatan_lembaga')->insert($jabatan_batch);
+        // Insert batch (sekaligus) agar performa lebih cepat
+        DB::table('jabatan_lembaga')->insert($data);
     }
 }
