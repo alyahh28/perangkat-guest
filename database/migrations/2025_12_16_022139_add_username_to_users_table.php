@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Menambahkan kolom username setelah email
-            // Kita beri nullable dulu biar aman jika ada data lama, tapi nanti wajib diisi
+
             $table->string('username', 20)->unique()->nullable()->after('email');
         });
     }

@@ -6,9 +6,12 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
-        Schema::create('perangkat_desa', function (Blueprint $table) {
+          Schema::create('perangkat_desa', function (Blueprint $table) {
             $table->id('perangkat_id');
             $table->foreignId('warga_id')->constrained('warga', 'warga_id')->onDelete('cascade');
             $table->string('jabatan', 100);
@@ -18,16 +21,13 @@ return new class extends Migration
             $table->date('periode_selesai')->nullable();
             $table->string('foto')->nullable();
             $table->timestamps();
-
-             // Foreign key constraint
-            $table->foreign('warga_id')
-                  ->references('warga_id')
-                  ->on('warga')
-                  ->onDelete('cascade');
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         Schema::dropIfExists('perangkat_desa');
     }

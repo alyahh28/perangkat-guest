@@ -13,6 +13,7 @@ class MediaController extends Controller
      */
     public function index()
     {
+        // Mengurutkan dari yang terbaru
         $media = Media::orderBy('media_id', 'desc')->paginate(10);
         return view('pages.media.index', compact('media'));
     }
@@ -30,29 +31,30 @@ class MediaController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi input
+        // 1. Validasi input
         $request->validate([
-            'ref_table' => 'required|string|max:50',
-            'ref_id' => 'required|integer',
-            'file_upload' => 'required|file|mimes:jpeg,png,jpg,gif,pdf|max:2048',
-            'caption' => 'nullable|string|max:255',
-            'sort_order' => 'nullable|integer',
+            'ref_table'   => 'required|string|max:50',
+            'ref_id'      => 'required|integer',
+            'file_upload' => 'required|file|mimes:jpeg,png,jpg,gif,pdf|max:2048', // Max 2MB
+            'caption'     => 'nullable|string|max:255',
+            'sort_order'  => 'nullable|integer',
         ]);
 
-        // Proses upload file
+        // 2. Proses upload file
         $file = $request->file('file_upload');
-        $fileName = time() . '_' . $file->getClientOriginalName();
+        // Membuat nama file unik: timestamp_namafileasli
+        $fileName = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
 
-        // Simpan file ke storage
-        $path = $file->storeAs('public/uploads', $fileName);
+        // 3. Simpan file ke storage (storage/app/public/uploads)
+        $file->storeAs('public/uploads', $fileName);
 
-        // Simpan ke database
+        // 4. Simpan data ke database
         Media::create([
-            'ref_table' => $request->ref_table,
-            'ref_id' => $request->ref_id,
-            'file_name' => $fileName,
-            'caption' => $request->caption,
-            'mime_type' => $file->getMimeType(),
+            'ref_table'  => $request->ref_table,
+            'ref_id'     => $request->ref_id,
+            'file_name'  => $fileName,
+            'caption'    => $request->caption,
+            'mime_type'  => $file->getMimeType(),
             'sort_order' => $request->sort_order ?? 0,
         ]);
 
@@ -81,41 +83,43 @@ class MediaController extends Controller
      */
     public function update(Request $request, Media $media)
     {
-        // Validasi input
+        // 1. Validasi input (file_upload menjadi nullable/opsional di sini)
         $request->validate([
-            'ref_table' => 'required|string|max:50',
-            'ref_id' => 'required|integer',
-            'caption' => 'nullable|string|max:255',
-            'sort_order' => 'nullable|integer',
+            'ref_table'   => 'required|string|max:50',
+            'ref_id'      => 'required|integer',
+            'caption'     => 'nullable|string|max:255',
+            'sort_order'  => 'nullable|integer',
             'file_upload' => 'nullable|file|mimes:jpeg,png,jpg,gif,pdf|max:2048',
         ]);
 
-        // Data yang akan diupdate
+        // 2. Siapkan data yang akan diupdate (selain file)
         $data = [
-            'ref_table' => $request->ref_table,
-            'ref_id' => $request->ref_id,
-            'caption' => $request->caption,
+            'ref_table'  => $request->ref_table,
+            'ref_id'     => $request->ref_id,
+            'caption'    => $request->caption,
             'sort_order' => $request->sort_order,
         ];
 
-        // Jika ada file baru diupload
+        // 3. Cek apakah user mengupload file baru?
         if ($request->hasFile('file_upload')) {
-            foreach ($request->file('file_upload') as $file){{
-                // Hapus file lama
-            Storage::delete('public/uploads/' . $media->file_name);
 
-            // Upload file baru
+            // Hapus file lama jika ada di storage
+            $oldFilePath = 'public/uploads/' . $media->file_name;
+            if (Storage::exists($oldFilePath)) {
+                Storage::delete($oldFilePath);
+            }
+
+            // Proses upload file baru
             $file = $request->file('file_upload');
-            $fileName = time() . '_' . $file->getClientOriginalName();
+            $fileName = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
             $file->storeAs('public/uploads', $fileName);
 
+            // Masukkan info file baru ke array data
             $data['file_name'] = $fileName;
             $data['mime_type'] = $file->getMimeType();
-            }}
-
         }
 
-        // Update database
+        // 4. Update database
         $media->update($data);
 
         return redirect()->route('media.index')
@@ -128,15 +132,21 @@ class MediaController extends Controller
     public function destroy(Media $media)
     {
         try {
-            // Hapus file dari storage
-            Storage::delete('public/uploads/' . $media->file_name);
+            // 1. Hapus file fisik dari storage
+            $filePath = 'public/uploads/' . $media->file_name;
 
-            // Hapus dari database
+            if (Storage::exists($filePath)) {
+                Storage::delete($filePath);
+            }
+
+            // 2. Hapus record dari database
             $media->delete();
 
             return redirect()->route('media.index')
                 ->with('success', 'Media berhasil dihapus.');
+
         } catch (\Exception $e) {
+            // Log error jika diperlukan: \Log::error($e->getMessage());
             return redirect()->route('media.index')
                 ->with('error', 'Gagal menghapus media.');
         }
