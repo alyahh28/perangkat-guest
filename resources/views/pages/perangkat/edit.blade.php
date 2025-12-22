@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     @include('layouts.guest.css')
 </head>
+
 <body>
     <div class="container-xxl bg-white p-0">
         @include('layouts.guest.header')
@@ -20,9 +22,10 @@
                                     @csrf
                                     @method('PUT')
                                     <div class="row">
+                                        {{-- NAMA WARGA --}}
                                         <div class="col-md-6 mb-3">
                                             <label for="warga_id" class="form-label">Nama Warga *</label>
-                                            <select class="form-select" id="warga_id" name="warga_id" required>
+                                            <select class="form-select @error('warga_id') is-invalid @enderror" id="warga_id" name="warga_id" required>
                                                 <option value="">Pilih Warga</option>
                                                 @foreach ($dataWarga as $warga)
                                                     <option value="{{ $warga->warga_id }}" {{ old('warga_id', $dataPerangkat->warga_id) == $warga->warga_id ? 'selected' : '' }}>
@@ -30,37 +33,60 @@
                                                     </option>
                                                 @endforeach
                                             </select>
+                                            @error('warga_id')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
 
+                                        {{-- JABATAN --}}
                                         <div class="col-md-6 mb-3">
                                             <label for="jabatan" class="form-label">Jabatan *</label>
-                                            <input type="text" class="form-control" id="jabatan" name="jabatan" value="{{ old('jabatan', $dataPerangkat->jabatan) }}" required>
+                                            <input type="text" class="form-control @error('jabatan') is-invalid @enderror" id="jabatan" name="jabatan" value="{{ old('jabatan', $dataPerangkat->jabatan) }}" required>
+                                            @error('jabatan')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
 
+                                        {{-- NIP --}}
                                         <div class="col-md-6 mb-3">
                                             <label for="nip" class="form-label">NIP</label>
-                                            <input type="text" class="form-control" id="nip" name="nip" value="{{ old('nip', $dataPerangkat->nip) }}">
+                                            <input type="text" class="form-control @error('nip') is-invalid @enderror" id="nip" name="nip" value="{{ old('nip', $dataPerangkat->nip) }}">
+                                            @error('nip')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
 
+                                        {{-- KONTAK --}}
                                         <div class="col-md-6 mb-3">
                                             <label for="kontak" class="form-label">Kontak *</label>
-                                            <input type="text" class="form-control" id="kontak" name="kontak" value="{{ old('kontak', $dataPerangkat->kontak) }}" required>
+                                            <input type="text" class="form-control @error('kontak') is-invalid @enderror" id="kontak" name="kontak" value="{{ old('kontak', $dataPerangkat->kontak) }}" required>
+                                            @error('kontak')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
 
+                                        {{-- PERIODE MULAI --}}
                                         <div class="col-md-6 mb-3">
                                             <label for="periode_mulai" class="form-label">Periode Mulai *</label>
-                                            <input type="date" class="form-control" id="periode_mulai" name="periode_mulai" value="{{ old('periode_mulai', $dataPerangkat->periode_mulai) }}" required>
+                                            <input type="date" class="form-control @error('periode_mulai') is-invalid @enderror" id="periode_mulai" name="periode_mulai" value="{{ old('periode_mulai', $dataPerangkat->periode_mulai) }}" required>
+                                            @error('periode_mulai')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
 
+                                        {{-- PERIODE SELESAI --}}
                                         <div class="col-md-6 mb-3">
                                             <label for="periode_selesai" class="form-label">Periode Selesai</label>
-                                            <input type="date" class="form-control" id="periode_selesai" name="periode_selesai" value="{{ old('periode_selesai', $dataPerangkat->periode_selesai) }}">
+                                            <input type="date" class="form-control @error('periode_selesai') is-invalid @enderror" id="periode_selesai" name="periode_selesai" value="{{ old('periode_selesai', $dataPerangkat->periode_selesai) }}">
+                                            @error('periode_selesai')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
 
+                                        {{-- FOTO UTAMA --}}
                                         <div class="col-12 mb-3">
                                             <label for="foto" class="form-label">Foto Profil Utama</label>
                                             <div class="mb-2">
-                                                {{-- LOGIKA DISPLAY FOTO SAAT EDIT --}}
                                                 @php
                                                     $editImgSrc = $dataPerangkat->foto ? asset('storage/' . $dataPerangkat->foto) : asset('assets-guest/img/no-image.jpg');
                                                 @endphp
@@ -71,7 +97,10 @@
                                                      onerror="this.onerror=null;this.src='{{ asset('assets-guest/img/no-image.jpg') }}';">
                                                 <br><small class="text-muted">Foto saat ini</small>
                                             </div>
-                                            <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
+                                            <input type="file" class="form-control @error('foto') is-invalid @enderror" id="foto" name="foto" accept="image/*">
+                                            @error('foto')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 
@@ -79,7 +108,10 @@
                                     <hr>
                                     <div class="col-12 mb-3">
                                         <h5 class="mb-3">Galeri / Dokumentasi</h5>
-                                        @if($dataPerangkat->media->count() > 0)
+
+                                        {{-- PERBAIKAN UTAMA DI SINI (Line 82) --}}
+                                        {{-- Kita cek apakah media ada (tidak null) DAN jumlahnya lebih dari 0 --}}
+                                        @if($dataPerangkat->media && $dataPerangkat->media->count() > 0)
                                             <div class="mb-4 p-3 bg-light rounded">
                                                 <p class="text-muted fw-bold mb-2">Foto yang sudah diupload:</p>
                                                 <div class="row">
@@ -147,4 +179,5 @@
         });
     </script>
 </body>
+
 </html>

@@ -40,7 +40,7 @@
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <img class="img-fluid wow zoomIn" data-wow-delay="0.5s" src="{{ asset('assets-guest/img/about.jpg') }}" alt="Tentang Desa">
+                    <img class="img-fluid wow zoomIn" data-wow-delay="0.5s" src="{{ asset('assets-guest/img/dash.png') }}" alt="Tentang Desa">
                 </div>
             </div>
         </div>

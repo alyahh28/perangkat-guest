@@ -42,64 +42,123 @@
                             </div>
 
                             <div class="card-body p-4">
-                                {{-- Avatar / Icon Placeholder --}}
-                                <div class="text-center mb-4">
-                                    <div class="d-inline-block rounded-circle bg-light p-4 shadow-sm">
-                                        <i class="fa fa-user fa-4x text-info"></i>
-                                    </div>
-                                    <h3 class="mt-3 mb-1">{{ $user->name }}</h3>
-                                    <p class="text-muted">{{ $user->email }}</p>
-                                </div>
+    {{-- Avatar / Foto dari Tabel Media --}}
+    <div class="text-center mb-4">
+    @php
+        // Coba ambil berdasarkan media_id di users
+        $userMedia = null;
 
-                                <hr>
+        if ($user->media_id) {
+            $userMedia = \App\Models\Media::find($user->media_id);
+        }
 
-                                {{-- Informasi Detail --}}
-                                <div class="row g-4 mt-2">
-                                    {{-- Username --}}
-                                    <div class="col-md-6">
-                                        <div class="p-3 bg-light rounded h-100">
-                                            <small class="text-muted text-uppercase fw-bold d-block mb-1">Username</small>
-                                            <span class="fs-5 text-dark fw-bold">{{ $user->username }}</span>
-                                        </div>
-                                    </div>
+        // Jika tidak ada, cari berdasarkan ref_id
+        if (!$userMedia) {
+            $userMedia = \App\Models\Media::where('ref_table', 'users')
+                                          ->where('ref_id', $user->id)
+                                          ->first();
 
-                                    {{-- Role --}}
-                                    <div class="col-md-6">
-                                        <div class="p-3 bg-light rounded h-100">
-                                            <small class="text-muted text-uppercase fw-bold d-block mb-1">Role Akses</small>
-                                            <span class="fs-5 text-dark">{{ $user->role }}</span>
-                                        </div>
-                                    </div>
+            // Jika ditemukan, update media_id di user
+            if ($userMedia && $user->media_id != $userMedia->media_id) {
+                $user->media_id = $userMedia->media_id;
+                $user->save();
+            }
+        }
+    @endphp
 
-                                    {{-- Status Akun --}}
-                                    <div class="col-md-6">
-                                        <div class="p-3 bg-light rounded h-100">
-                                            <small class="text-muted text-uppercase fw-bold d-block mb-1">Status Akun</small>
-                                            @if($user->activiti == 'Aktif')
-                                                <span class="text-success fw-bold"><i class="fa fa-check-circle me-1"></i> Aktif</span>
-                                            @else
-                                                <span class="text-danger fw-bold"><i class="fa fa-times-circle me-1"></i> Tidak Aktif</span>
-                                            @endif
-                                        </div>
-                                    </div>
+    @if($userMedia)
+        {{-- Tampilkan foto dari media_id --}}
+        <div class="position-relative d-inline-block">
+            <img src="{{ asset('storage/users/' . $userMedia->file_name) }}"
+                 alt="Foto {{ $user->name }}"
+                 class="rounded-circle shadow-sm border border-4 border-white"
+                 style="width: 120px; height: 120px; object-fit: cover;"
+                 title="Media ID: {{ $userMedia->media_id }} | User Media ID: {{ $user->media_id }}">
 
-                                    {{-- Tanggal Bergabung --}}
-                                    <div class="col-md-6">
-                                        <div class="p-3 bg-light rounded h-100">
-                                            <small class="text-muted text-uppercase fw-bold d-block mb-1">Tanggal Bergabung</small>
-                                            <span class="text-dark">{{ $user->created_at->format('d F Y, H:i') }} WIB</span>
-                                        </div>
-                                    </div>
+            <span class="position-absolute top-0 end-0 badge bg-info rounded-pill">
+                MID: {{ $userMedia->media_id }}
+            </span>
+        </div>
 
-                                     {{-- Tanggal Update Terakhir --}}
-                                     <div class="col-md-12">
-                                        <div class="p-3 bg-light rounded h-100">
-                                            <small class="text-muted text-uppercase fw-bold d-block mb-1">Terakhir Diupdate</small>
-                                            <span class="text-dark">{{ $user->updated_at->format('d F Y, H:i') }} WIB</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+        <div class="mt-3">
+            <small class="text-info">
+                <i class="fa fa-database me-1"></i>
+                media_id di users: <strong>{{ $user->media_id }}</strong>
+            </small>
+            <br>
+            <small class="text-muted">
+                <i class="fa fa-image me-1"></i>
+                File: {{ $userMedia->file_name }}
+            </small>
+        </div>
+    @else
+        {{-- Default --}}
+        <img src="{{ asset('storage/users/user_1.jpg') }}"
+             alt="Foto Default"
+             class="rounded-circle shadow-sm border border-4 border-white"
+             style="width: 120px; height: 120px; object-fit: cover;">
+
+        <div class="mt-3">
+            <small class="text-muted">
+                <i class="fa fa-exclamation-circle me-1"></i>
+                media_id di users: <strong>{{ $user->media_id ?? 'NULL' }}</strong>
+            </small>
+        </div>
+    @endif
+
+    <h3 class="mt-3 mb-1">{{ $user->name }}</h3>
+    <p class="text-muted">{{ $user->email }}</p>
+</div>
+    <hr>
+
+
+    {{-- Informasi Detail --}}
+    <div class="row g-4 mt-2">
+        {{-- Username --}}
+        <div class="col-md-6">
+            <div class="p-3 bg-light rounded h-100">
+                <small class="text-muted text-uppercase fw-bold d-block mb-1">Username</small>
+                <span class="fs-5 text-dark fw-bold">{{ $user->username }}</span>
+            </div>
+        </div>
+
+        {{-- Role --}}
+        <div class="col-md-6">
+            <div class="p-3 bg-light rounded h-100">
+                <small class="text-muted text-uppercase fw-bold d-block mb-1">Role Akses</small>
+                <span class="fs-5 text-dark">{{ $user->role }}</span>
+            </div>
+        </div>
+
+        {{-- Status Akun --}}
+        <div class="col-md-6">
+            <div class="p-3 bg-light rounded h-100">
+                <small class="text-muted text-uppercase fw-bold d-block mb-1">Status Akun</small>
+                @if($user->activiti == 'Aktif')
+                    <span class="text-success fw-bold"><i class="fa fa-check-circle me-1"></i> Aktif</span>
+                @else
+                    <span class="text-danger fw-bold"><i class="fa fa-times-circle me-1"></i> Tidak Aktif</span>
+                @endif
+            </div>
+        </div>
+
+        {{-- Tanggal Bergabung --}}
+        <div class="col-md-6">
+            <div class="p-3 bg-light rounded h-100">
+                <small class="text-muted text-uppercase fw-bold d-block mb-1">Tanggal Bergabung</small>
+                <span class="text-dark">{{ $user->created_at->format('d F Y, H:i') }} WIB</span>
+            </div>
+        </div>
+
+         {{-- Tanggal Update Terakhir --}}
+         <div class="col-md-12">
+            <div class="p-3 bg-light rounded h-100">
+                <small class="text-muted text-uppercase fw-bold d-block mb-1">Terakhir Diupdate</small>
+                <span class="text-dark">{{ $user->updated_at->format('d F Y, H:i') }} WIB</span>
+            </div>
+        </div>
+    </div>
+</div>
 
                             {{-- Footer Actions --}}
                             <div class="card-footer bg-white p-4 border-top">

@@ -5,28 +5,20 @@
     {{-- START CSS --}}
     @include('layouts.guest.css')
     {{-- END CSS --}}
-
-
 </head>
 
 <body>
     <div class="container-xxl bg-white p-0">
-        <!-- Spinner Start -->
         <div id="spinner"
             class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
         </div>
-        <!-- Spinner End -->
 
-        {{-- START HEADER --}}
-        <!-- Navbar & Hero Start -->
+        {{-- HEADER --}}
         @include('layouts.guest.header')
-        <!-- Navbar & Hero End -->
-        {{-- END HEADER --}}
 
-        <!-- Content Start -->
         <div class="container-xxl py-5">
             <div class="container px-lg-5">
                 <div class="row justify-content-center">
@@ -42,7 +34,6 @@
                                 </div>
                             </div>
                             <div class="card-body p-4">
-                                <!-- User Info Card -->
                                 <div class="card user-info-card mb-4">
                                     <div class="card-body">
                                         <div class="row">
@@ -63,6 +54,7 @@
                                     @csrf
                                     @method('PUT')
                                     <div class="row">
+                                        {{-- NAMA LENGKAP --}}
                                         <div class="col-12 mb-4">
                                             <label for="name" class="form-label required-field">Nama Lengkap</label>
                                             <input type="text"
@@ -74,6 +66,7 @@
                                             @enderror
                                         </div>
 
+                                        {{-- EMAIL --}}
                                         <div class="col-12 mb-4">
                                             <label for="email" class="form-label required-field">Alamat Email</label>
                                             <input type="email"
@@ -85,6 +78,7 @@
                                             @enderror
                                         </div>
 
+                                        {{-- USERNAME --}}
                                         <div class="col-12 mb-4">
                                             <label for="username" class="form-label required-field">Username</label>
                                             <input type="text"
@@ -97,95 +91,110 @@
                                             @enderror
                                         </div>
 
-                                        <!-- role -->
-                                        <div class="mb-3">
-    <label class="form-label">Role Pengguna</label>
-    <select name="role" class="form-control">
-        <option value="User" {{ $user->role == 'User' ? 'selected' : '' }}>User</option>
-        <option value="Warga" {{ $user->role == 'Warga' ? 'selected' : '' }}>Warga</option>
-        <option value="Admin" {{ $user->role == 'Admin' ? 'selected' : '' }}>Admin</option>
-    </select>
-</div>
-                                    </div>
-
-                                    <div class="col-md-6 mb-4">
-                                        <label for="password" class="form-label">Password Baru</label>
-                                        <div class="input-group">
-                                            <input type="password"
-                                                class="form-control @error('password') is-invalid @enderror"
-                                                id="password" name="password"
-                                                placeholder="Kosongkan jika tidak ingin mengubah">
-                                            <span class="input-group-text password-toggle" id="togglePassword">
-                                                <i class="fa fa-eye"></i>
-                                            </span>
-                                            @error('password')
+                                        {{-- ROLE PENGGUNA --}}
+                                        <div class="col-12 mb-4">
+                                            <label class="form-label">Role Pengguna</label>
+                                            <select name="role"
+                                                class="form-control @error('role') is-invalid @enderror">
+                                                {{-- PERBAIKAN: Gunakan $dataUser --}}
+                                                <option value="User"
+                                                    {{ old('role', $dataUser->role) == 'User' ? 'selected' : '' }}>User
+                                                </option>
+                                                <option value="Warga"
+                                                    {{ old('role', $dataUser->role) == 'Warga' ? 'selected' : '' }}>
+                                                    Warga</option>
+                                                <option value="Admin"
+                                                    {{ old('role', $dataUser->role) == 'Admin' ? 'selected' : '' }}>
+                                                    Admin</option>
+                                            </select>
+                                            @error('role')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
 
-                                    </div>
+                                        {{-- PASSWORD --}}
+                                        <div class="col-md-6 mb-4">
+                                            <label for="password" class="form-label">Password Baru</label>
+                                            <div class="input-group">
+                                                <input type="password"
+                                                    class="form-control @error('password') is-invalid @enderror"
+                                                    id="password" name="password"
+                                                    placeholder="Kosongkan jika tidak ingin mengubah">
+                                                <span class="input-group-text password-toggle" id="togglePassword"
+                                                    style="cursor: pointer;">
+                                                    <i class="fa fa-eye"></i>
+                                                </span>
+                                                @error('password')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
 
-                                    <div class="col-md-6 mb-4">
-                                        <label for="password_confirmation" class="form-label">Konfirmasi Password
-                                            Baru</label>
-                                        <div class="input-group">
-                                            <input type="password"
-                                                class="form-control @error('password') is-invalid @enderror"
-                                                id="password_confirmation" name="password_confirmation"
-                                                placeholder="Kosongkan jika tidak ingin mengubah">
-                                            <span class="input-group-text password-toggle"
-                                                id="togglePasswordConfirmation">
-                                                <i class="fa fa-eye"></i>
-                                            </span>
+                                        {{-- KONFIRMASI PASSWORD --}}
+                                        <div class="col-md-6 mb-4">
+                                            <label for="password_confirmation" class="form-label">Konfirmasi Password
+                                                Baru</label>
+                                            <div class="input-group">
+                                                <input type="password" class="form-control" id="password_confirmation"
+                                                    name="password_confirmation"
+                                                    placeholder="Kosongkan jika tidak ingin mengubah">
+                                                <span class="input-group-text password-toggle"
+                                                    id="togglePasswordConfirmation" style="cursor: pointer;">
+                                                    <i class="fa fa-eye"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 mb-3">
+                                            <div class="alert alert-info">
+                                                <small>
+                                                    <i class="fa fa-info-circle me-2"></i>
+                                                    <strong>Informasi:</strong> Password hanya perlu diisi jika ingin
+                                                    mengubah password.
+                                                </small>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="col-12 mb-3">
-                                        <div class="alert alert-info">
-                                            <small>
-                                                <i class="fa fa-info-circle me-2"></i>
-                                                <strong>Informasi:</strong> Password hanya perlu diisi jika ingin
-                                                mengubah password.
-                                                Jika tidak, biarkan kolom password kosong.
-                                            </small>
+                                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                                        <a href="{{ route('users.index') }}" class="btn btn-secondary">
+                                            <i class="fa fa-arrow-left me-2"></i>Kembali ke Daftar
+                                        </a>
+                                        <div>
+                                            <button type="reset" class="btn btn-outline-secondary me-2">
+                                                <i class="fa fa-undo me-2"></i>Reset
+                                            </button>
+                                            <button type="submit" class="btn btn-warning">
+                                                <i class="fa fa-save me-2"></i>Update User
+                                            </button>
                                         </div>
                                     </div>
+                                </form>
                             </div>
-
-                            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-                                <a href="{{ route('users.index') }}" class="btn btn-secondary">
-                                    <i class="fa fa-arrow-left me-2"></i>Kembali ke Daftar
-                                </a>
-                                <div>
-                                    <button type="reset" class="btn btn-outline-secondary me-2">
-                                        <i class="fa fa-undo me-2"></i>Reset
-                                    </button>
-                                    <button type="submit" class="btn btn-warning">
-                                        <i class="fa fa-save me-2"></i>Update User
-                                    </button>
-                                </div>
-                            </div>
-                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Content End -->
+        @include('layouts.guest.footer')
+        @include('layouts.guest.js')
 
-    <!-- Footer Start -->
-    @include('layouts.guest.footer')
-    <!-- Footer End -->
+        <script>
+            // Script untuk Toggle Password
+            document.getElementById('togglePassword').addEventListener('click', function(e) {
+                const password = document.getElementById('password');
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
+                this.querySelector('i').classList.toggle('fa-eye-slash');
+            });
 
-
-
-
-    {{-- START JS --}}
-    @include('layouts.guest.js')
-    {{-- END JS --}}
-
-
+            document.getElementById('togglePasswordConfirmation').addEventListener('click', function(e) {
+                const password = document.getElementById('password_confirmation');
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
+                this.querySelector('i').classList.toggle('fa-eye-slash');
+            });
+        </script>
 </body>
 
 </html>

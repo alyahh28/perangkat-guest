@@ -2,7 +2,7 @@
         <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
             <a href="{{ url('/') }}" class="navbar-brand p-0">
                 {{-- PERBAIKAN: Logo diperbesar lagi menjadi max-height 200px --}}
-                <img src="{{ asset('assets-guest/img/logo2.png') }}" alt="Logo SiPerDes" style="max-height: 50px; width: auto;">
+                <img src="{{ asset('assets-guest/img/logo.png') }}" alt="Logo SiPerDes" style="max-height: 50px; width: auto;">
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -45,6 +45,18 @@
                                 </a>
                             </li>
                             <li>
+                                <a href="{{ route('rw.index') }}"
+                                    class="dropdown-item {{ request()->is('rw.*') ? 'active' : '' }}">
+                                    <i class="fas fa-user-cog me-2"></i>Data RW
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('rt.index') }}"
+                                    class="dropdown-item {{ request()->is('rt.*') ? 'active' : '' }}">
+                                    <i class="fas fa-user-cog me-2"></i>Data RT
+                                </a>
+                            </li>
+                            <li>
                                 <a href="{{ route('lembaga.index') }}"
                                     class="dropdown-item {{ request()->is('lembaga*') ? 'active' : '' }}">
                                     <i class="fas fa-building me-2"></i>Data Lembaga Desa
@@ -54,6 +66,12 @@
                                 <a href="{{ route('jabatan-lembaga.index') }}"
                                     class="dropdown-item {{ request()->is('jabatan-lembaga*') ? 'active' : '' }}">
                                     <i class="fas fa-user-tie me-2"></i>Data Jabatan Lembaga
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('anggota-lembaga.index') }}"
+                                    class="dropdown-item {{ request()->is('anggota-lembaga*') ? 'active' : '' }}">
+                                    <i class="fas fa-user-tie me-2"></i>Data Anggota Lembaga
                                 </a>
                             </li>
                         </ul>

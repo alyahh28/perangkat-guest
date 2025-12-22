@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Storage;
 
 class Media extends Model
 {
@@ -14,8 +14,8 @@ class Media extends Model
     protected $primaryKey = 'media_id';
 
     protected $fillable = [
-        'ref_table',
-        'ref_id',
+        'ref_table', // Contoh: 'perangkat_desa', 'lembaga_desa'
+        'ref_id',    // ID dari tabel referensi
         'file_name',
         'caption',
         'mime_type',
@@ -27,17 +27,16 @@ class Media extends Model
         'ref_id' => 'integer',
     ];
 
-    /**
-     * Get the full URL of the media file
-     */
+    // Akses URL file secara otomatis
     public function getUrlAttribute()
     {
-        return asset('storage/uploads/' . $this->file_name);
+        if ($this->file_name) {
+            return asset('storage/uploads/' . $this->file_name);
+        }
+        return asset('assets/img/no-image.png'); // Gambar default jika kosong
     }
 
-    /**
-     * Get the parent model (PerangkatDesa or LembagaDesa)
-     */
+    // Relasi Manual (Sesuai kode Anda)
     public function parent()
     {
         switch ($this->ref_table) {
@@ -48,5 +47,15 @@ class Media extends Model
             default:
                 return null;
         }
+    }
+
+    // Hapus file fisik saat row database dihapus
+    protected static function booted()
+    {
+        static::deleting(function ($media) {
+            if ($media->file_name && Storage::exists('public/uploads/' . $media->file_name)) {
+                Storage::delete('public/uploads/' . $media->file_name);
+            }
+        });
     }
 }

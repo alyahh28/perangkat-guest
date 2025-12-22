@@ -11,14 +11,38 @@ class LembagaDesa extends Model
     use HasFactory;
 
     protected $table = 'lembaga_desa';
+
+    // PERBAIKAN PENTING: Memberitahu Laravel nama Primary Key kita
     protected $primaryKey = 'lembaga_id';
 
     protected $fillable = [
         'nama_lembaga',
         'deskripsi',
         'kontak',
-        'logo' // TAMBAHAN KOLOM LOGO
+        'logo',
+        'media_id',
     ];
+
+    // ========== RELASI ==========
+
+    public function media()
+    {
+        return $this->belongsTo(Media::class, 'media_id');
+    }
+
+    public function galeri()
+    {
+        return $this->hasMany(Media::class, 'ref_id', 'lembaga_id')
+                    ->where('ref_table', 'lembaga_desa');
+    }
+
+    public function jabatans()
+    {
+        // Relasi ke Jabatan (One to Many)
+        return $this->hasMany(JabatanLembaga::class, 'lembaga_id', 'lembaga_id');
+    }
+
+    // ========== SCOPES & ACCESSORS (Sesuai kode kamu sebelumnya) ==========
 
     public function scopeFilter(Builder $query, $request, array $filterableColumns): Builder
     {
@@ -42,20 +66,11 @@ class LembagaDesa extends Model
         return $query;
     }
 
-    // Getter untuk logo URL
     public function getLogoUrlAttribute()
     {
-        if ($this->logo) {
-            return asset('storage/logos/' . $this->logo);
+        if ($this->media) {
+            return asset('storage/' . $this->media->path);
         }
-        return asset('storage/logos/default-logo.png'); // Logo default jika tidak ada
+        return $this->logo ? asset('storage/logos/' . $this->logo) : asset('images/default-logo.png');
     }
-
-    public function media()
-{
-    return $this->hasMany(Media::class, 'ref_id', 'lembaga_id')
-                ->where('ref_table', 'lembaga_desa');
 }
-
-}
-

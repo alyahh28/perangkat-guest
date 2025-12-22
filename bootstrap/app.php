@@ -18,6 +18,14 @@ return Application::configure(basePath: dirname(__DIR__))
             'checkrole' => CheckRole::class,
         ]);
     })
+
+
+    ->withMiddleware(function (Middleware $middleware) {
+    $middleware->append(\App\Http\Middleware\SetDatabase::class);
+})
+
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();
+
+

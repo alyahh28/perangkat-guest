@@ -40,7 +40,7 @@
                     <div class="col-md-2">
                         <select name="lembaga_id" class="form-select" onchange="this.form.submit()">
                             <option value="">Semua Lembaga</option>
-                            @foreach($lembagaList as $lembaga)
+                            @foreach ($lembagaList as $lembaga)
                                 <option value="{{ $lembaga->lembaga_id }}"
                                     {{ request('lembaga_id') == $lembaga->lembaga_id ? 'selected' : '' }}>
                                     {{ $lembaga->nama_lembaga }}
@@ -53,9 +53,8 @@
                     <div class="col-md-2">
                         <select name="level" class="form-select" onchange="this.form.submit()">
                             <option value="">Semua Level</option>
-                            @for($i = 1; $i <= 10; $i++)
-                                <option value="{{ $i }}"
-                                    {{ request('level') == $i ? 'selected' : '' }}>
+                            @for ($i = 1; $i <= 10; $i++)
+                                <option value="{{ $i }}" {{ request('level') == $i ? 'selected' : '' }}>
                                     Level {{ $i }}
                                 </option>
                             @endfor
@@ -65,9 +64,8 @@
                     <!-- Search Input -->
                     <div class="col-md-4">
                         <div class="input-group">
-                            <input type="text" name="search" class="form-control"
-                                value="{{ request('search') }}" placeholder="Cari nama jabatan atau lembaga..."
-                                aria-label="Search">
+                            <input type="text" name="search" class="form-control" value="{{ request('search') }}"
+                                placeholder="Cari nama jabatan atau lembaga..." aria-label="Search">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fa fa-search"></i>
                             </button>
@@ -129,8 +127,7 @@
                                         </div>
                                         <div class="info-row">
                                             <span class="info-label">Dibuat:</span>
-                                            <span
-                                                class="info-value">{{ $item->created_at->format('d M Y') }}</span>
+                                            <span class="info-value">{{ $item->created_at->format('d M Y') }}</span>
                                         </div>
                                     </div>
                                 </div>
