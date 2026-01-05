@@ -1,0 +1,173 @@
+@extends('layouts.guest.app')
+
+@section('content')
+    <div class="container-fluid py-5">
+        <div class="container px-lg-5">
+            {{-- Alert --}}
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show wow fadeInUp" data-wow-delay="0.1s" role="alert">
+                    <i class="fa fa-check-circle me-2"></i>
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            {{-- Statistics Cards --}}
+            <div class="row g-4 mb-5">
+                <div class="col-xl-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="card border-0 shadow-sm h-100 p-2">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="bg-primary rounded d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                <i class="fa fa-map-marked text-white fs-4"></i>
+                            </div>
+                            <div>
+                                <h4 class="mb-0 fw-bold">{{ $stats['total_rw'] ?? 0 }}</h4>
+                                <small class="text-muted">Total RW</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="card border-0 shadow-sm h-100 p-2">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="bg-success rounded d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                <i class="fa fa-user-tie text-white fs-4"></i>
+                            </div>
+                            <div>
+                                <h4 class="mb-0 fw-bold">{{ $stats['ketua_terisi'] ?? 0 }}</h4>
+                                <small class="text-muted">Ketua Terisi</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="card border-0 shadow-sm h-100 p-2">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="bg-info rounded d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                <i class="fa fa-map text-white fs-4"></i>
+                            </div>
+                            <div>
+                                <h4 class="mb-0 fw-bold">{{ $stats['total_rt'] ?? 0 }}</h4>
+                                <small class="text-muted">Jumlah RT</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 wow fadeInUp" data-wow-delay="0.4s">
+                    <div class="card border-0 shadow-sm h-100 p-2">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="bg-warning rounded d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                <i class="fa fa-calendar-plus text-white fs-4"></i>
+                            </div>
+                            <div>
+                                <h4 class="mb-0 fw-bold">{{ $stats['rw_baru'] ?? 0 }}</h4>
+                                <small class="text-muted">RW Baru (1 Bln)</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Title Section --}}
+            <div class="section-title position-relative text-center mb-5 pb-2 wow fadeInUp" data-wow-delay="0.1s">
+                <h6 class="position-relative d-inline text-primary ps-4">Struktur Wilayah</h6>
+                <h2 class="mt-2">Data Rukun Warga (RW)</h2>
+            </div>
+
+            {{-- Filter & Action --}}
+            <div class="row g-4 mb-4 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="col-lg-8">
+                   {{-- Search (Optional if needed, currently just placeholder/simple search logic if exists or empty div) --}}
+                   {{-- Since RW index usually just lists few items, maybe search isn't strictly needed primarily, but to keep consistent UI, we can add a simple form or just the title description --}}
+                   <p class="mb-0 text-muted d-flex align-items-center h-100">
+                        <i class="fa fa-info-circle me-2 text-primary"></i> Kelola data Rukun Warga di desa.
+                   </p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a href="{{ route('rw.create') }}" class="btn btn-primary">
+                        <i class="fa fa-plus me-2"></i>Tambah RW
+                    </a>
+                </div>
+            </div>
+
+            {{-- Data Grid --}}
+            <div class="row g-4">
+                @forelse ($rws as $rw)
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="card border-0 shadow-sm h-100 overflow-hidden">
+                            {{-- Header --}}
+                            <div class="card-body text-center pt-4 pb-0">
+                                @if($rw->foto_profile)
+                                    <img src="{{ $rw->foto_profile->url }}" 
+                                         class="rounded-circle shadow-sm mb-3 mx-auto d-block" 
+                                         alt="Foto RW" 
+                                         style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #f8f9fa;">
+                                @else
+                                    <div class="rounded-circle shadow-sm mb-3 d-flex align-items-center justify-content-center bg-light text-primary mx-auto" 
+                                         style="width: 100px; height: 100px; border: 3px solid #f8f9fa; font-size: 3rem;">
+                                        <i class="fa fa-user-tie"></i>
+                                    </div>
+                                @endif
+                                
+                                <h5 class="mb-1 text-truncate" title="{{ $rw->ketua->nama ?? '-' }}">
+                                    {{ $rw->ketua->nama ?? '-' }}
+                                </h5>
+                                <p class="text-primary fw-bold mb-2">Ketua RW</p>
+
+                                <span class="badge rounded-pill bg-success mb-3">
+                                    RW {{ $rw->nomor_rw }}
+                                </span>
+                            </div>
+
+                            {{-- Details --}}
+                            <div class="card-body border-top bg-light">
+                                <div class="d-flex justify-content-between mb-2 small">
+                                    <span class="text-muted"><i class="fa fa-hashtag me-1"></i> ID Sistem</span>
+                                    <span class="fw-bold">#{{ $rw->rw_id }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 small">
+                                    <span class="text-muted"><i class="fa fa-calendar me-1"></i> Terdaftar</span>
+                                    <span class="fw-bold">
+                                        {{ $rw->created_at ? $rw->created_at->format('d M Y') : '-' }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {{-- Actions --}}
+                            <div class="card-footer bg-white border-top p-3">
+                                <div class="d-flex gap-2">
+                                    <a href="{{ route('rw.edit', $rw->rw_id) }}" class="btn btn-sm btn-outline-warning flex-fill" title="Edit">
+                                        <i class="fa fa-edit"></i> Edit
+                                    </a>
+                                    <form action="{{ route('rw.destroy', $rw->rw_id) }}" method="POST" class="flex-fill">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger w-100" 
+                                            onclick="return confirm('Apakah Anda yakin ingin menghapus data RW {{ $rw->nomor_rw }}?')" title="Hapus">
+                                            <i class="fa fa-trash"></i> Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="col-12 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="text-center bg-light rounded p-5">
+                            <i class="fa fa-users fa-4x text-muted mb-3"></i>
+                            <h4 class="text-muted">Belum Ada Data RW</h4>
+                            <p class="text-muted mb-4">Silakan tambah data RW pertama.</p>
+                            <a href="{{ route('rw.create') }}" class="btn btn-primary">
+                                <i class="fa fa-plus me-2"></i>Tambah RW Pertama
+                            </a>
+                        </div>
+                    </div>
+                @endforelse
+            </div>
+
+            <div class="mt-5 wow fadeInUp" data-wow-delay="0.1s">
+                {{ $rws->links('pagination::bootstrap-5') }}
+            </div>
+        </div>
+    </div>
+@endsection
